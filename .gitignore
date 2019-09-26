@@ -112,6 +112,5 @@ gradle-app.setting
 
 ### Custom
 .idea
-credentials.json
-
+src/test/resources/credentials.json
 
