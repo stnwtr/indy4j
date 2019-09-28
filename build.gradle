@@ -15,6 +15,7 @@ repositories {
 
 dependencies {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.2'
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.5.2'
 
     implementation 'net.dongliu:requests:5.0.7'
 
@@ -24,6 +25,8 @@ dependencies {
 }
 
 test {
+    useJUnitPlatform()
+
     testLogging {
         showStandardStreams = true
         events = ['passed', 'failed', 'skipped']
