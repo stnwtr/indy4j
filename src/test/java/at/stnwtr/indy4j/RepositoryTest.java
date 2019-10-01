@@ -18,15 +18,20 @@ class RepositoryTest {
   private Repository<User> users;
 
   /**
+   * Some test users.
+   */
+  private User alex, max, mike;
+
+  /**
    * Instantiate the repository and add tes users.
    */
   @BeforeEach
   void setUp() {
     users = Repository.create();
 
-    users.add(new User("A", "A"));
-    users.add(new User("B", "B"));
-    users.add(new User("C", "C"));
+    alex = new User("Alex", "S");
+    max = new User("Max", "S");
+    mike = new User("Mike", "R");
   }
 
   /**
@@ -34,10 +39,9 @@ class RepositoryTest {
    */
   @Test
   void addSinglesTest() {
-    users.clear();
-    users.add(new User("A", "A"));
-    users.add(new User("B", "B"));
-    users.add(new User("C", "C"));
+    users.add(alex);
+    users.add(max);
+    users.add(mike);
 
     Assertions.assertEquals(3, users.size());
   }
@@ -49,13 +53,100 @@ class RepositoryTest {
   void addCollectionTest() {
     List<User> temporal = new ArrayList<>();
 
-    temporal.add(new User("A", "A"));
-    temporal.add(new User("B", "B"));
-    temporal.add(new User("C", "C"));
+    temporal.add(alex);
+    temporal.add(max);
+    temporal.add(mike);
 
-    users.clear();
     users.add(temporal);
 
     Assertions.assertEquals(3, users.size());
+  }
+
+  @Test
+  void removeSingleTest() {
+    users.add(alex);
+    users.add(max);
+    users.add(mike);
+
+    users.remove(alex);
+
+    Assertions.assertEquals(2, users.size());
+  }
+
+  @Test
+  void removeCollectionTest() {
+    users.add(alex);
+    users.add(max);
+    users.add(mike);
+
+    List<User> temporal = new ArrayList<>();
+
+    temporal.add(alex);
+    temporal.add(max);
+
+    users.remove(temporal);
+
+    Assertions.assertEquals(1, users.size());
+  }
+
+  @Test
+  void removeSpecificationTest() {
+    users.add(alex);
+    users.add(max);
+    users.add(mike);
+
+    users.remove(user -> "S".equals(user.getPassword()));
+
+    Assertions.assertEquals(1, users.size());
+  }
+
+  @Test
+  void containsSingleTest() {
+    users.add(alex);
+    users.add(max);
+
+    Assertions.assertTrue(users.contains(alex));
+    Assertions.assertFalse(users.contains(mike));
+  }
+
+  @Test
+  void containsSpecificationTest() {
+    users.add(alex);
+    users.add(max);
+    users.add(mike);
+
+    Assertions.assertTrue(users.contains(user -> "R".equals(user.getPassword())));
+    Assertions.assertFalse(users.contains(user -> "A".equals(user.getPassword())));
+  }
+
+  @Test
+  void getAllTest() {
+    users.add(alex);
+    users.add(max);
+    users.add(mike);
+
+    Assertions.assertEquals(3, users.getAll().size());
+  }
+
+  @Test
+  void queryTest() {
+    users.add(alex);
+    users.add(max);
+    users.add(mike);
+
+    Assertions.assertEquals(2, users.query(user -> "S".equals(user.getPassword())).size());
+    Assertions.assertEquals(0, users.query(user -> false).size());
+    Assertions.assertEquals(3, users.query(user -> true).size());
+  }
+
+  @Test
+  void clearTest() {
+    users.add(alex);
+    users.add(max);
+    users.add(mike);
+
+    users.clear();
+
+    Assertions.assertEquals(0, users.size());
   }
 }
