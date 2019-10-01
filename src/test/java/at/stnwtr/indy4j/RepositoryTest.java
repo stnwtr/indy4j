@@ -62,6 +62,9 @@ class RepositoryTest {
     Assertions.assertEquals(3, users.size());
   }
 
+  /**
+   * Check if the method to remove a single element works.
+   */
   @Test
   void removeSingleTest() {
     users.add(alex);
@@ -73,6 +76,9 @@ class RepositoryTest {
     Assertions.assertEquals(2, users.size());
   }
 
+  /**
+   * Check if the method to remove a whole collection works.
+   */
   @Test
   void removeCollectionTest() {
     users.add(alex);
@@ -89,6 +95,9 @@ class RepositoryTest {
     Assertions.assertEquals(1, users.size());
   }
 
+  /**
+   * Test if the remove with specification works as expected.
+   */
   @Test
   void removeSpecificationTest() {
     users.add(alex);
@@ -100,6 +109,9 @@ class RepositoryTest {
     Assertions.assertEquals(1, users.size());
   }
 
+  /**
+   * Test if the contains method works fine.
+   */
   @Test
   void containsSingleTest() {
     users.add(alex);
@@ -109,6 +121,9 @@ class RepositoryTest {
     Assertions.assertFalse(users.contains(mike));
   }
 
+  /**
+   * Test if contains with a {@link at.stnwtr.indy4j.repository.Specification} works well.
+   */
   @Test
   void containsSpecificationTest() {
     users.add(alex);
@@ -119,6 +134,9 @@ class RepositoryTest {
     Assertions.assertFalse(users.contains(user -> "A".equals(user.getPassword())));
   }
 
+  /**
+   * Check if get all returns all.
+   */
   @Test
   void getAllTest() {
     users.add(alex);
@@ -128,6 +146,9 @@ class RepositoryTest {
     Assertions.assertEquals(3, users.getAll().size());
   }
 
+  /**
+   * Check if the query method works as expected.
+   */
   @Test
   void queryTest() {
     users.add(alex);
@@ -139,6 +160,9 @@ class RepositoryTest {
     Assertions.assertEquals(3, users.query(user -> true).size());
   }
 
+  /**
+   * Check if the repository is cleared.
+   */
   @Test
   void clearTest() {
     users.add(alex);
