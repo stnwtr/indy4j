@@ -1,0 +1,6 @@
+- [ ] special indy integration
+- [ ] my statistics integration
+- [ ] priority selection
+- [ ] date parser
+- [ ] update and build documentation
+- [ ] release notes

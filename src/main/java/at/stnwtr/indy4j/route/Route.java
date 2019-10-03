@@ -1,5 +1,7 @@
 package at.stnwtr.indy4j.route;
 
+import at.stnwtr.indy4j.object.IndyObject;
+import at.stnwtr.indy4j.request.IndyRequest;
 import java.util.Objects;
 import net.dongliu.requests.Methods;
 
@@ -11,7 +13,7 @@ import net.dongliu.requests.Methods;
  *
  * @param <T> The response type.
  */
-public class Route<T> {
+public class Route<T extends IndyObject> {
 
   /**
    * The request method.
@@ -38,7 +40,7 @@ public class Route<T> {
    */
   private Route(String method, String url, Class<T> responseType) {
     this.method = method;
-    this.url = url;
+    this.url = Routes.BASE_URL + url;
     this.responseType = responseType;
   }
 
@@ -50,7 +52,7 @@ public class Route<T> {
    * @param <T> The response type.
    * @return A new route with post request type.
    */
-  public static <T> Route<T> post(String url, Class<T> responseType) {
+  public static <T extends IndyObject> Route<T> post(String url, Class<T> responseType) {
     return new Route<>(Methods.POST, url, responseType);
   }
 
@@ -62,7 +64,7 @@ public class Route<T> {
    * @param <T> The response type.
    * @return A new route with get request type.
    */
-  public static <T> Route<T> get(String url, Class<T> responseType) {
+  public static <T extends IndyObject> Route<T> get(String url, Class<T> responseType) {
     return new Route<>(Methods.GET, url, responseType);
   }
 
@@ -91,6 +93,15 @@ public class Route<T> {
    */
   public Class<T> getResponseType() {
     return responseType;
+  }
+
+  /**
+   * Generate a new {@link IndyRequest}.
+   *
+   * @return The new request.
+   */
+  public IndyRequest<T> newRequest() {
+    return new IndyRequest<>(this);
   }
 
   /**
