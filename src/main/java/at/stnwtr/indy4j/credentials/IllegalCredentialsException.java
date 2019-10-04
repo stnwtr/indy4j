@@ -28,4 +28,12 @@ public class IllegalCredentialsException extends RuntimeException {
   public IllegalCredentialsException(String message, Throwable cause) {
     super(message, cause);
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "IllegalCredentialsException{}";
+  }
 }

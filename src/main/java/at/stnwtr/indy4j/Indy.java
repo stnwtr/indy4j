@@ -6,6 +6,8 @@ import java.util.HashMap;
 import net.dongliu.requests.RawResponse;
 import net.dongliu.requests.Requests;
 import net.dongliu.requests.Session;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Main class for this project.
@@ -15,33 +17,42 @@ import net.dongliu.requests.Session;
  */
 public class Indy {
 
+  /**
+   * The {@link Credentials} the user needs to log in.
+   */
   private final Credentials credentials;
 
+  /**
+   * The http session which sends the requests.
+   */
+  private final Session session;
+
+  /**
+   * Constructor which expects only the credentials.
+   *
+   * @param credentials The user credentials.
+   */
   public Indy(Credentials credentials) {
     this.credentials = credentials;
+    session = Requests.session();
   }
 
+  /**
+   * Log in into the indy http session.
+   */
   public void login() {
-    Routes.LOGIN.newRequest().head().body().request();
+    JSONObject data = new JSONObject()
+        .put("LoginName", credentials.getUsername())
+        .put("LoginPassword", credentials.getPassword())
+        .put("camefrom", "index");
+
+    Routes.LOGIN.newRequest().body(data).send(session);
   }
 
+  /**
+   * Log out of the indy http session.
+   */
   public void logout() {
-
-  }
-
-  public void main(String[] args) {
-    Session session = Requests.session();
-
-    RawResponse response = session
-        .post("https://indy.sz-ybbs.ac.at/pages/loginLogout/ldap_auth.php")
-        .body(new HashMap<String, String>() {{
-          put("LoginName", "username");
-          put("LoginPassword", "password");
-          put("camefrom", "index");
-        }})
-        .send();
-
-    System.out.println(response.statusLine());
-    System.out.println(response.readToText());
+    Routes.LOGOUT.newRequest().send(session);
   }
 }
