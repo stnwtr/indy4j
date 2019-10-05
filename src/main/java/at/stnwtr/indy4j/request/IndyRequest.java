@@ -1,9 +1,7 @@
 package at.stnwtr.indy4j.request;
 
-import at.stnwtr.indy4j.object.IllegalIndyObjectException;
-import at.stnwtr.indy4j.object.IndyObject;
+import at.stnwtr.indy4j.response.IndyResponse;
 import at.stnwtr.indy4j.route.Route;
-import java.lang.reflect.InvocationTargetException;
 import net.dongliu.requests.RawResponse;
 import net.dongliu.requests.Session;
 import org.json.JSONObject;
@@ -11,16 +9,15 @@ import org.json.JSONObject;
 /**
  * The more accurate indy http request which stores basic data.
  *
- * @param <T> The type of {@link IndyObject} to return.
  * @author stnwtr
  * @since 04.10.2019
  */
-public class IndyRequest<T extends IndyObject> {
+public class IndyRequest {
 
   /**
    * The route to request.
    */
-  private final Route<T> route;
+  private final Route route;
 
   /**
    * The indy http request body.
@@ -32,7 +29,7 @@ public class IndyRequest<T extends IndyObject> {
    *
    * @param route The route.
    */
-  public IndyRequest(Route<T> route) {
+  public IndyRequest(Route route) {
     this.route = route;
     this.body = new RequestBody();
   }
@@ -43,7 +40,7 @@ public class IndyRequest<T extends IndyObject> {
    * @param jsonObject The {@link JSONObject} which holds the form data.
    * @return Itself, for builder pattern purposes.
    */
-  public IndyRequest<T> body(JSONObject jsonObject) {
+  public IndyRequest body(JSONObject jsonObject) {
     body.setJsonObject(jsonObject);
     return this;
   }
@@ -52,17 +49,13 @@ public class IndyRequest<T extends IndyObject> {
    * Send the indy http request and proceed the response.
    *
    * @param session The http session.
-   * @return The newly generated {@link IndyObject}.
+   * @return The newly generated {@link IndyResponse}.
    */
-  public T send(Session session) {
+  public IndyResponse send(Session session) {
     RawResponse response = session.newRequest(route.getMethod(), route.getUrl())
         .body(body.toUrlEncodedMap())
         .send();
 
-    try {
-      return route.getResponseType().getConstructor(RawResponse.class).newInstance(response);
-    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-      throw new IllegalIndyObjectException("Could not create a new " + route.getResponseType(), e);
-    }
+    return new IndyResponse(response);
   }
 }

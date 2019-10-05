@@ -1,7 +1,7 @@
 package at.stnwtr.indy4j;
 
 import at.stnwtr.indy4j.credentials.Credentials;
-import at.stnwtr.indy4j.object.IndyObject;
+import at.stnwtr.indy4j.response.IndyResponse;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -47,9 +47,9 @@ class RequestTest {
    */
   @Test
   void logActionsStatusCode() {
-    IndyObject login = indy.login();
+    IndyResponse login = indy.login();
     Assertions.assertEquals(200, login.getStatusCode());
-    IndyObject logout = indy.logout();
+    IndyResponse logout = indy.logout();
     Assertions.assertEquals(200, logout.getStatusCode());
   }
 

@@ -1,8 +1,7 @@
 package at.stnwtr.indy4j;
 
 import at.stnwtr.indy4j.credentials.Credentials;
-import at.stnwtr.indy4j.object.CustomIndyObject;
-import at.stnwtr.indy4j.object.IndyObject;
+import at.stnwtr.indy4j.response.IndyResponse;
 import at.stnwtr.indy4j.route.Routes;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,9 +40,9 @@ public class Indy {
   /**
    * Log in into the indy http session.
    *
-   * @return A new {@link IndyObject}.
+   * @return A new {@link IndyResponse}.
    */
-  public IndyObject login() {
+  public IndyResponse login() {
     JSONObject data = new JSONObject()
         .put("LoginName", credentials.getUsername())
         .put("LoginPassword", credentials.getPassword())
@@ -57,20 +56,17 @@ public class Indy {
    *
    * @return True if logged in, else false.
    */
-  @SuppressWarnings("unchecked")
   public boolean loggedIn() {
-    // TODO: 05.10.2019 Use regex or a html parser.
-    CustomIndyObject<Boolean> response = Routes.LOGGED_IN.newRequest().send(session);
-    response.setFunction(s -> s.contains("Abmelden"));
-    return response.getFunction().apply(response.asString());
+    IndyResponse response = Routes.LOGGED_IN.newRequest().send(session);
+    return response.asString().contains("Abmelden");
   }
 
   /**
    * Log out of the indy http session.
    *
-   * @return A new {@link IndyObject}.
+   * @return A new {@link IndyResponse}.
    */
-  public IndyObject logout() {
+  public IndyResponse logout() {
     return Routes.LOGOUT.newRequest().send(session);
   }
 

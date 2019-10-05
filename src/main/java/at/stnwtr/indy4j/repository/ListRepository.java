@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A simple implementation of the {@link Repository} with a {@link List} as holder.
@@ -84,6 +85,14 @@ public class ListRepository<E> implements Repository<E> {
     return list.stream()
         .filter(specification::isSatisfied)
         .collect(Collectors.toList());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Stream<E> stream() {
+    return list.stream();
   }
 
   /**

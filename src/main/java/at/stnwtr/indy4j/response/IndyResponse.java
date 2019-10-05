@@ -1,4 +1,4 @@
-package at.stnwtr.indy4j.object;
+package at.stnwtr.indy4j.response;
 
 import java.util.Objects;
 import net.dongliu.requests.RawResponse;
@@ -10,7 +10,7 @@ import org.json.JSONObject;
  * @author stnwtr
  * @since 04.10.2019
  */
-public class IndyObject {
+public class IndyResponse {
 
   /**
    * The indy http response.
@@ -22,7 +22,7 @@ public class IndyObject {
    *
    * @param response The response.
    */
-  public IndyObject(RawResponse response) {
+  public IndyResponse(RawResponse response) {
     this.response = response;
   }
 
@@ -64,7 +64,7 @@ public class IndyObject {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    IndyObject that = (IndyObject) o;
+    IndyResponse that = (IndyResponse) o;
     return Objects.equals(response, that.response);
   }
 

@@ -3,6 +3,8 @@ package at.stnwtr.indy4j;
 import at.stnwtr.indy4j.repository.Repository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -158,6 +160,20 @@ class RepositoryTest {
     Assertions.assertEquals(2, users.query(user -> "S".equals(user.getPassword())).size());
     Assertions.assertEquals(0, users.query(user -> false).size());
     Assertions.assertEquals(3, users.query(user -> true).size());
+  }
+
+  @Test
+  void streamTest() {
+    users.add(alex);
+    users.add(max);
+    users.add(mike);
+
+    List<String> temporary = users.stream()
+        .map(User::getPassword)
+        .filter("S"::equals)
+        .collect(Collectors.toList());
+
+    Assertions.assertEquals(2, temporary.size());
   }
 
   /**

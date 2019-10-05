@@ -1,8 +1,5 @@
 package at.stnwtr.indy4j.route;
 
-import at.stnwtr.indy4j.object.CustomIndyObject;
-import at.stnwtr.indy4j.object.IndyObject;
-
 /**
  * A collection of {@link Route} objects.
  *
@@ -19,35 +16,30 @@ public class Routes {
   /**
    * The route which logs the user in. Is a redirection.
    */
-  public static final Route<IndyObject> LOGIN = Route
-      .post("pages/loginLogout/ldap_auth.php", IndyObject.class);
+  public static final Route LOGIN = Route.post("pages/loginLogout/ldap_auth.php");
 
   /**
    * The route which checks if the user is logged in.
    */
-  public static final Route<CustomIndyObject> LOGGED_IN = Route
-      .get("pages/index.php", CustomIndyObject.class);
+  public static final Route LOGGED_IN = Route.get("pages/index.php");
 
   /**
    * The route which logs the user out.
    */
-  public static final Route<IndyObject> LOGOUT = Route
-      .get("pages/loginLogout/logout.php", IndyObject.class);
+  public static final Route LOGOUT = Route.get("pages/loginLogout/logout.php");
 
   /**
    * A link to the index page. View a list of special indy events.
    */
-  public static final Route<IndyObject> INDEX = Route.get("pages/index.php", null);
+  public static final Route INDEX = Route.get("pages/index.php");
 
   /**
    * Load the calendar. No response from this request.
    */
-  public static final Route<IndyObject> CALENDAR = Route
-      .get("pages/calendarStudent/calendar.php", null);
+  public static final Route CALENDAR = Route.get("pages/calendarStudent/calendar.php");
 
   /**
    * Get all event entries.
    */
-  public static final Route<IndyObject> GET_EVENTS = Route
-      .post("pages/calendarStudent/scripts/getEvents.php", IndyObject.class);
+  public static final Route GET_EVENTS = Route.post("pages/calendarStudent/scripts/getEvents.php");
 }

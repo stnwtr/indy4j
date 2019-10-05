@@ -1,6 +1,7 @@
 package at.stnwtr.indy4j.repository;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 /**
  * Repository to store objects of type e.
@@ -79,6 +80,13 @@ public interface Repository<E> {
    * @return A collection of elements which match.
    */
   Collection<E> query(Specification<E> specification);
+
+  /**
+   * Creates an element stream.
+   *
+   * @return A new stream.
+   */
+  Stream<E> stream();
 
   /**
    * Get the size of the repository.
