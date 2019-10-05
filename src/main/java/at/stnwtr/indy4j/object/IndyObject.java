@@ -50,7 +50,7 @@ public class IndyObject {
    * @return The response as json.
    */
   public JSONObject asJson() {
-    return response.readToJson(JSONObject.class);
+    return new JSONObject(asString());
   }
 
   /**

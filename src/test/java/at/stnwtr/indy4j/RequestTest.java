@@ -6,6 +6,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Set;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,5 +62,22 @@ class RequestTest {
     Assertions.assertTrue(indy.loggedIn());
     indy.logout();
     Assertions.assertFalse(indy.loggedIn());
+  }
+
+  /**
+   * Check if loading all events is working as expected.
+   */
+  @Test
+  void getEventsTest() {
+    indy.login();
+
+    Set<JSONObject> events = indy.getEvents();
+    Set<JSONObject> pastEvents = indy.getPastEvents();
+    Set<JSONObject> futureEvents = indy.getFutureEvents();
+
+    Assertions.assertTrue(events.size() > 0);
+    Assertions.assertEquals(events.size(), pastEvents.size() + futureEvents.size());
+
+    indy.logout();
   }
 }

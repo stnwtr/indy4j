@@ -4,6 +4,8 @@ import at.stnwtr.indy4j.credentials.Credentials;
 import at.stnwtr.indy4j.object.CustomIndyObject;
 import at.stnwtr.indy4j.object.IndyObject;
 import at.stnwtr.indy4j.route.Routes;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.dongliu.requests.Requests;
 import net.dongliu.requests.Session;
 import org.json.JSONObject;
@@ -70,5 +72,39 @@ public class Indy {
    */
   public IndyObject logout() {
     return Routes.LOGOUT.newRequest().send(session);
+  }
+
+  /**
+   * Get a set of all events.
+   *
+   * @return A set of all events.
+   */
+  public Set<JSONObject> getEvents() {
+    JSONObject events = Routes.GET_EVENTS.newRequest().send(session).asJson();
+    return events.keySet().stream()
+        .map(events::getJSONObject)
+        .collect(Collectors.toSet());
+  }
+
+  /**
+   * Get a set of all past events.
+   *
+   * @return A set of all past events.
+   */
+  public Set<JSONObject> getPastEvents() {
+    return getEvents().stream()
+        .filter(jsonObject -> jsonObject.optString("pastOrFuturePopUp", "past").equals("past"))
+        .collect(Collectors.toSet());
+  }
+
+  /**
+   * Get a set of all upcoming events.
+   *
+   * @return A set of all future events.
+   */
+  public Set<JSONObject> getFutureEvents() {
+    return getEvents().stream()
+        .filter(jsonObject -> jsonObject.optString("pastOrFuturePopUp", "past").equals("future"))
+        .collect(Collectors.toSet());
   }
 }

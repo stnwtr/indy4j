@@ -44,4 +44,10 @@ public class Routes {
    */
   public static final Route<IndyObject> CALENDAR = Route
       .get("pages/calendarStudent/calendar.php", null);
+
+  /**
+   * Get all event entries.
+   */
+  public static final Route<IndyObject> GET_EVENTS = Route
+      .post("pages/calendarStudent/scripts/getEvents.php", IndyObject.class);
 }
