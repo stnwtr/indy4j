@@ -1,5 +1,6 @@
 package at.stnwtr.indy4j.route;
 
+import at.stnwtr.indy4j.object.CustomIndyObject;
 import at.stnwtr.indy4j.object.IndyObject;
 
 /**
@@ -18,12 +19,20 @@ public class Routes {
   /**
    * The route which logs the user in. Is a redirection.
    */
-  public static final Route<IndyObject> LOGIN = Route.post("pages/loginLogout/ldap_auth.php", null);
+  public static final Route<IndyObject> LOGIN = Route
+      .post("pages/loginLogout/ldap_auth.php", IndyObject.class);
+
+  /**
+   * The route which checks if the user is logged in.
+   */
+  public static final Route<CustomIndyObject> LOGGED_IN = Route
+      .get("pages/index.php", CustomIndyObject.class);
 
   /**
    * The route which logs the user out.
    */
-  public static final Route<IndyObject> LOGOUT = Route.get("pages/loginLogout/logout.php", null);
+  public static final Route<IndyObject> LOGOUT = Route
+      .get("pages/loginLogout/logout.php", IndyObject.class);
 
   /**
    * A link to the index page. View a list of special indy events.
@@ -33,5 +42,6 @@ public class Routes {
   /**
    * Load the calendar. No response from this request.
    */
-  public static final Route<IndyObject> CALENDAR = Route.get("pages/calendarStudent/calendar.php", null);
+  public static final Route<IndyObject> CALENDAR = Route
+      .get("pages/calendarStudent/calendar.php", null);
 }

@@ -1,7 +1,9 @@
 package at.stnwtr.indy4j.request;
 
+import at.stnwtr.indy4j.object.IllegalIndyObjectException;
 import at.stnwtr.indy4j.object.IndyObject;
 import at.stnwtr.indy4j.route.Route;
+import java.lang.reflect.InvocationTargetException;
 import net.dongliu.requests.RawResponse;
 import net.dongliu.requests.Session;
 import org.json.JSONObject;
@@ -9,10 +11,9 @@ import org.json.JSONObject;
 /**
  * The more accurate indy http request which stores basic data.
  *
+ * @param <T> The type of {@link IndyObject} to return.
  * @author stnwtr
  * @since 04.10.2019
- *
- * @param <T> The type of {@link IndyObject} to return.
  */
 public class IndyRequest<T extends IndyObject> {
 
@@ -58,8 +59,10 @@ public class IndyRequest<T extends IndyObject> {
         .body(body.toUrlEncodedMap())
         .send();
 
-    // process and return object of type T (route.type)
-
-    return null;
+    try {
+      return route.getResponseType().getConstructor(RawResponse.class).newInstance(response);
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+      throw new IllegalIndyObjectException("Could not create a new " + route.getResponseType(), e);
+    }
   }
 }

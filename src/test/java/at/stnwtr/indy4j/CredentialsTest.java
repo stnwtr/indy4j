@@ -18,6 +18,9 @@ import org.junit.jupiter.api.Test;
  */
 class CredentialsTest {
 
+  // TODO: 04.10.2019 Second resource file with credentials username.
+  //                  Custom user tests for everyone. (username equals).
+
   /**
    * Check if the credentials created from the static factory are valid.
    */
@@ -97,7 +100,7 @@ class CredentialsTest {
    * Check if an exception is thrown on illegal dotted string.
    */
   @Test
-  void name() {
+  void illegalDottedString() {
     Assertions.assertThrows(IllegalCredentialsException.class,
         () -> Credentials.fromDottedString("pra14::"));
   }

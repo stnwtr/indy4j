@@ -1,5 +1,6 @@
 package at.stnwtr.indy4j.request;
 
+import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONObject;
 
@@ -22,14 +23,14 @@ public class RequestBody {
    * @param jsonObject The whole json object.
    */
   public RequestBody(JSONObject jsonObject) {
-    this.jsonObject = jsonObject;
+    setJsonObject(jsonObject);
   }
 
   /**
    * Empty constructor. Initializes with null.
    */
   public RequestBody() {
-    this(null);
+    this(new JSONObject());
   }
 
   /**
@@ -38,7 +39,7 @@ public class RequestBody {
    * @param jsonObject The json object.
    */
   void setJsonObject(JSONObject jsonObject) {
-    this.jsonObject = jsonObject;
+    this.jsonObject = jsonObject == null ? new JSONObject() : jsonObject;
   }
 
   /**
@@ -50,6 +51,8 @@ public class RequestBody {
     // TODO: 04.10.2019 check if arrays work as well
     //       if not -> recursive transformation
     //       if     -> useless wrapper object :c
-    return jsonObject.toMap();
+    Map<String, ?> urlEncoded = jsonObject.toMap();
+
+    return urlEncoded == null ? new HashMap<>() : urlEncoded;
   }
 }

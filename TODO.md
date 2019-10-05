@@ -1,3 +1,5 @@
+- [ ] get this working
+---
 - [ ] special indy integration
 - [ ] my statistics integration
 - [ ] priority selection
