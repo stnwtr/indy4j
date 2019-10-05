@@ -1,6 +1,7 @@
 package at.stnwtr.indy4j;
 
 import at.stnwtr.indy4j.credentials.Credentials;
+import at.stnwtr.indy4j.object.Event;
 import at.stnwtr.indy4j.response.IndyResponse;
 import at.stnwtr.indy4j.route.Routes;
 import java.util.Set;
@@ -75,32 +76,12 @@ public class Indy {
    *
    * @return A set of all events.
    */
-  public Set<JSONObject> getEvents() {
+  public Set<Event> getEvents() {
     JSONObject events = Routes.GET_EVENTS.newRequest().send(session).asJson();
-    return events.keySet().stream()
+    return events.keySet()
+        .stream()
         .map(events::getJSONObject)
-        .collect(Collectors.toSet());
-  }
-
-  /**
-   * Get a set of all past events.
-   *
-   * @return A set of all past events.
-   */
-  public Set<JSONObject> getPastEvents() {
-    return getEvents().stream()
-        .filter(jsonObject -> jsonObject.optString("pastOrFuturePopUp", "past").equals("past"))
-        .collect(Collectors.toSet());
-  }
-
-  /**
-   * Get a set of all upcoming events.
-   *
-   * @return A set of all future events.
-   */
-  public Set<JSONObject> getFutureEvents() {
-    return getEvents().stream()
-        .filter(jsonObject -> jsonObject.optString("pastOrFuturePopUp", "past").equals("future"))
+        .map(Event::new)
         .collect(Collectors.toSet());
   }
 }
