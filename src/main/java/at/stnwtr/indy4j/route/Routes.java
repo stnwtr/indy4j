@@ -29,6 +29,22 @@ public class Routes {
   public static final Route LOGOUT = Route.get("pages/loginLogout/logout.php");
 
   /**
+   * Get all event entries.
+   */
+  public static final Route GET_EVENTS = Route.post("pages/calendarStudent/scripts/getEvents.php");
+
+  /**
+   * Check the teacher absence on a specific date.
+   */
+  public static final Route CHECK_TEACHER_ABSENCE = Route
+      .post("php/queries/get/checkTeacherAbsence.php");
+
+  /**
+   * Load all indy data used for this event.
+   */
+  public static final Route LOAD_ALL = Route.post("php/queries/get/loadAll.php");
+
+  /**
    * A link to the index page. View a list of special indy events.
    */
   public static final Route INDEX = Route.get("pages/index.php");
@@ -38,8 +54,4 @@ public class Routes {
    */
   public static final Route CALENDAR = Route.get("pages/calendarStudent/calendar.php");
 
-  /**
-   * Get all event entries.
-   */
-  public static final Route GET_EVENTS = Route.post("pages/calendarStudent/scripts/getEvents.php");
 }

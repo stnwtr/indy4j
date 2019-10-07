@@ -7,9 +7,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.json.JSONObject;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,10 +72,7 @@ class RequestTest {
 //    indy.login();
 //
 //    System.out.println("---------------");
-//    indy.getEvents()
-//        .stream()
-//        .map(Event::getEventType)
-//        .forEach(System.out::println);
+//    indy.getNextEvents(3).map(Event::getDate).forEach(System.out::println);
 //    System.out.println("---------------");
 //
 //    indy.logout();

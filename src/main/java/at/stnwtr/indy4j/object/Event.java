@@ -1,5 +1,8 @@
 package at.stnwtr.indy4j.object;
 
+import java.util.Arrays;
+import java.util.Objects;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -31,6 +34,16 @@ public class Event {
   private String day;
 
   /**
+   * The count of indy hours.
+   */
+  private int count;
+
+  /**
+   * The hours as array.
+   */
+  private int[] hours;
+
+  /**
    * Constructor which only expects the raw json object.
    *
    * @param jsonObject The {@link JSONObject}.
@@ -40,11 +53,25 @@ public class Event {
     eventType = EventType.fromClasses(jsonObject.getString("class"));
 
     if (eventType == EventType.HOLIDAY) {
+      hours = new int[0];
       return;
     }
 
-    this.date = jsonObject.getString("number");
-    this.day = jsonObject.getString("day");
+    date = jsonObject.getString("number");
+    day = jsonObject.getString("day");
+    count = jsonObject.getInt("count");
+
+    if (eventType != EventType.EDITABLE_OPEN_HOURS
+        && eventType != EventType.EDITABLE_NO_OPEN_HOURS) {
+      hours = new int[0]; // count = 2; array length = 0; ???
+      return;
+    }
+
+    hours = new int[count];
+    JSONArray dayEvents = jsonObject.getJSONArray("dayEvents");
+    for (int i = 0; i < dayEvents.length(); i++) {
+      hours[i] = dayEvents.getJSONObject(i).getInt("title");
+    }
   }
 
   /**
@@ -81,5 +108,68 @@ public class Event {
    */
   public String getDay() {
     return day;
+  }
+
+  /**
+   * Get the count of indy hours.
+   *
+   * @return The count of indy hours.
+   */
+  public int getCount() {
+    return count;
+  }
+
+  /**
+   * Get the hours in which indy takes place.
+   *
+   * @return The hours in which indy takes place.
+   */
+  public int[] getHours() {
+    return hours;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Event event = (Event) o;
+    return count == event.count &&
+        Objects.equals(jsonObject, event.jsonObject) &&
+        eventType == event.eventType &&
+        Objects.equals(date, event.date) &&
+        Objects.equals(day, event.day) &&
+        Arrays.equals(hours, event.hours);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode() {
+    int result = Objects.hash(jsonObject, eventType, date, day, count);
+    result = 31 * result + Arrays.hashCode(hours);
+    return result;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "Event{" +
+        "jsonObject=" + jsonObject +
+        ", eventType=" + eventType +
+        ", date='" + date + '\'' +
+        ", day='" + day + '\'' +
+        ", count=" + count +
+        ", hours=" + Arrays.toString(hours) +
+        '}';
   }
 }
