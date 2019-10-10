@@ -3,7 +3,6 @@ package at.stnwtr.indy4j;
 import at.stnwtr.indy4j.repository.Repository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
