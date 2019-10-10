@@ -2,10 +2,9 @@ package at.stnwtr.indy4j;
 
 import at.stnwtr.indy4j.credentials.Credentials;
 import at.stnwtr.indy4j.credentials.IllegalCredentialsException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
-import java.util.Objects;
+
+import java.io.BufferedReader;
+import java.io.StringReader;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,10 +25,11 @@ class CredentialsTest {
    */
   @Test
   void staticFactoryTest() {
-    Credentials credentials = Credentials.of("pra14", "abc123");
+    // the string doesn't matter in this case
+    Credentials credentials = Credentials.of("pra14", "abc123".toCharArray());
 
     Assertions.assertEquals("pra14", credentials.getUsername());
-    Assertions.assertEquals("abc123", credentials.getPassword());
+    Assertions.assertArrayEquals("abc123".toCharArray(), credentials.getPassword());
   }
 
   /**
@@ -42,24 +42,17 @@ class CredentialsTest {
     );
 
     Assertions.assertEquals("pra14", credentials.getUsername());
-    Assertions.assertEquals("abc123", credentials.getPassword());
+    Assertions.assertArrayEquals("abc123".toCharArray(), credentials.getPassword());
   }
 
   /**
-   * Check if the file contains a valid credentials json object.
+   * Check if the BufferedReader contains a valid credentials json object.
    */
   @Test
   void fromJsonFileTest() {
-    try {
-      URI uri = Objects
-          .requireNonNull(CredentialsTest.class.getClassLoader().getResource("credentials.json"))
-          .toURI();
-
-      Credentials credentials = Credentials.fromJsonFile(Paths.get(uri).toString());
-      Assertions.assertEquals("simon.steinkellner", credentials.getUsername());
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
-    }
+    Credentials credentials = Credentials.fromJsonFile(new BufferedReader(new StringReader(RequestTest.JSON_CREDENTIALS)));
+    Assertions.assertEquals("firstname.lastname", credentials.getUsername());
+    Assertions.assertArrayEquals("walrus123".toCharArray(), credentials.getPassword());
   }
 
   /**
@@ -67,11 +60,10 @@ class CredentialsTest {
    */
   @Test
   void fromJsonStringTest() {
-    String jsonString = "{\"username\": \"pra14\", \"password\": \"abc123\"}";
-    Credentials credentials = Credentials.fromJsonString(jsonString);
+    Credentials credentials = Credentials.fromJsonString(RequestTest.JSON_CREDENTIALS);
 
-    Assertions.assertEquals("pra14", credentials.getUsername());
-    Assertions.assertEquals("abc123", credentials.getPassword());
+    Assertions.assertEquals("firstname.lastname", credentials.getUsername());
+    Assertions.assertArrayEquals("walrus123".toCharArray(), credentials.getPassword());
   }
 
   /**
@@ -83,7 +75,7 @@ class CredentialsTest {
     Credentials credentials = Credentials.fromDottedString(dottedString);
 
     Assertions.assertEquals("pra14", credentials.getUsername());
-    Assertions.assertEquals("abc123", credentials.getPassword());
+    Assertions.assertArrayEquals("abc123".toCharArray(), credentials.getPassword());
   }
 
   /**

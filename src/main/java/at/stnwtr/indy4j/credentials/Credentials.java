@@ -1,9 +1,15 @@
 package at.stnwtr.indy4j.credentials;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Objects;
+
+import at.stnwtr.indy4j.Indy;
 import org.json.JSONObject;
 
 /**
@@ -22,7 +28,7 @@ public class Credentials {
   /**
    * The password.
    */
-  private final String password;
+  private transient final char[] password;
 
   /**
    * Constructor which takes both attributes.
@@ -30,9 +36,20 @@ public class Credentials {
    * @param username The username.
    * @param password The password.
    */
-  private Credentials(String username, String password) {
+  private Credentials(String username, char[] password) {
     this.username = username;
     this.password = password;
+  }
+
+  /**
+   * Constructor which takes both attributes.
+   *
+   * @param username The username.
+   * @param password The password, converted and stored as a char array
+   */
+  private Credentials(String username, String password) {
+    this.username = username;
+    this.password = password.toCharArray();
   }
 
   /**
@@ -42,7 +59,7 @@ public class Credentials {
    * @param password The password.
    * @return A new credentials instance.
    */
-  public static Credentials of(String username, String password) {
+  public static Credentials of(String username, char[] password) {
     return new Credentials(username, password);
   }
 
@@ -60,12 +77,7 @@ public class Credentials {
     return new Credentials(jsonObject.getString("username"), jsonObject.getString("password"));
   }
 
-  /**
-   * Get a new credentials instance from a file.
-   *
-   * @param path The file path.
-   * @return The new credentials instance.
-   */
+  /*
   public static Credentials fromJsonFile(String path) {
     try {
       byte[] content = Files.readAllBytes(Paths.get(path));
@@ -73,6 +85,30 @@ public class Credentials {
       JSONObject jsonObject = new JSONObject(new String(content));
 
       return fromJsonObject(jsonObject);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return new Credentials("", "");
+  }
+  */
+
+  /**
+   * Get a new credentials instance from a file.
+   *
+   * @param reader A BufferedReader for input.
+   * @return The new credentials instance.
+   */
+  public static Credentials fromJsonFile(BufferedReader reader) {
+    try {
+      StringBuilder response = new StringBuilder();
+      String line;
+
+      while ((line = reader.readLine()) != null) {
+        response.append(line);
+      }
+      return fromJsonObject(new JSONObject(response.toString()));
+
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -119,7 +155,7 @@ public class Credentials {
    *
    * @return The password.
    */
-  public String getPassword() {
+  public char[] getPassword() {
     return password;
   }
 
@@ -136,7 +172,7 @@ public class Credentials {
     }
     Credentials that = (Credentials) o;
     return Objects.equals(username, that.username) &&
-        Objects.equals(password, that.password);
+            Arrays.equals(password, that.password);
   }
 
   /**
@@ -154,7 +190,8 @@ public class Credentials {
   public String toString() {
     return "Credentials{" +
         "username='" + username + '\'' +
-        ", password='" + password + '\'' +
+        // not sure if this is a good idea
+        // ", password='" + password + '\'' +
         '}';
   }
 }

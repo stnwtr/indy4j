@@ -1,15 +1,10 @@
 package at.stnwtr.indy4j;
 
 import at.stnwtr.indy4j.credentials.Credentials;
-import at.stnwtr.indy4j.object.Event;
 import at.stnwtr.indy4j.response.IndyResponse;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.StringReader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,21 +22,15 @@ class RequestTest {
    */
   private Indy indy;
 
+  static String JSON_CREDENTIALS = "{\"username\": \"firstname.lastname\", \"password\": \"walrus123\"}";
+
   /**
    * Set the credentials.
    */
   @BeforeEach
   void setUp() {
-    try {
-      URI uri = Objects
-          .requireNonNull(Credentials.class.getClassLoader().getResource("credentials.json"))
-          .toURI();
-      Credentials credentials = Credentials.fromJsonFile(Paths.get(uri).toString());
-
-      indy = new Indy(credentials);
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
-    }
+    Credentials credentials = Credentials.fromJsonFile(new BufferedReader(new StringReader(JSON_CREDENTIALS)));
+    indy = new Indy(credentials);
   }
 
   /**
