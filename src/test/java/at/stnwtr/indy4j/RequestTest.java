@@ -1,13 +1,15 @@
 package at.stnwtr.indy4j;
 
 import at.stnwtr.indy4j.credentials.Credentials;
-import at.stnwtr.indy4j.object.Event;
+import at.stnwtr.indy4j.event.Event;
 import at.stnwtr.indy4j.response.IndyResponse;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.Objects;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -71,9 +73,7 @@ class RequestTest {
 //  void getEventsTest() {
 //    indy.login();
 //
-//    System.out.println("---------------");
-//    indy.getNextEvents(3).map(Event::getDate).forEach(System.out::println);
-//    System.out.println("---------------");
+//    indy.getNextEvents(3).stream().map(Event::getDate).forEach(System.out::println);
 //
 //    indy.logout();
 //  }

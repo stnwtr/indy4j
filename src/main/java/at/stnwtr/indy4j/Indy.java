@@ -1,13 +1,13 @@
 package at.stnwtr.indy4j;
 
 import at.stnwtr.indy4j.credentials.Credentials;
-import at.stnwtr.indy4j.object.Event;
+import at.stnwtr.indy4j.event.Event;
 import at.stnwtr.indy4j.response.IndyResponse;
 import at.stnwtr.indy4j.route.Routes;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import net.dongliu.requests.Requests;
 import net.dongliu.requests.Session;
 import org.json.JSONObject;
@@ -74,28 +74,68 @@ public class Indy {
   }
 
   /**
-   * Get a stream of all events.
+   * Get a set of all events.
    *
-   * @return A stream of all events.
+   * @return A set of all events.
    */
-  public Stream<Event> getEvents() {
+  public Set<Event> getEvents() {
     JSONObject events = Routes.GET_EVENTS.newRequest().send(session).asJson();
     return events.keySet()
         .stream()
         .map(events::getJSONObject)
-        .map(Event::new);
+        .map(Event::new)
+        .collect(Collectors.toSet());
   }
 
   /**
    * Get the next n upcoming events. Can be less than the limit.
    *
    * @param limit The amount of events the stream should contain.
-   * @return A stream of n upcoming events.
+   * @return A set of n upcoming events.
    */
-  public Stream<Event> getNextEvents(int limit) {
+  public Set<Event> getNextEvents(int limit) {
     return getEvents()
-        .filter(event -> event.getEventType().isEditable())
+        .stream()
+        .filter(Event::isFuture)
+        .limit(limit)
         .sorted(Comparator.comparing(Event::getDate))
-        .limit(limit);
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
+
+//
+//  private Optional getFutureEventDetails(Event event) {
+//    JSONArray specifiedHours = new JSONArray();
+//    for (int hour : event.getHours()) {
+//      specifiedHours.put(hour);
+//    }
+//    JSONObject data = new JSONObject()
+//        .put("day", event.getDay())
+//        .put("totalHours", event.getCount())
+//        .put("date", event.getDate())
+//        .put("specifiedHours", specifiedHours);
+//
+//    JSONObject details = Routes.LOAD_ALL.newRequest().body(data).send(session).asJson();
+//
+//    System.out.println(details);
+//
+//    return null;
+//  }
+//
+//  private Optional getPastEventDetails(Event event) {
+//    return null;
+//  }
+//
+//  public Optional getEventDetails(Event event) {
+////    JSONObject data = new JSONObject()
+////        .put("date", event.getDate());
+////
+////     JSONObject absence = Routes.CHECK_TEACHER_ABSENCE.newRequest().body(data).send(session)
+////        .asJson();
+//
+//    if (event.getEventType().isEditable()) {
+//      return getFutureEventDetails(event);
+//    } else {
+//      return getPastEventDetails(event);
+//    }
+//  }
 }
