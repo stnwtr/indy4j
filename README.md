@@ -26,7 +26,7 @@ allprojects {
 }
 
 dependencies {
-  implementation: 'com.github.stnwtr:indy4j:version'
+  implementation 'com.github.stnwtr:indy4j:version'
 }
 ```
 
