@@ -56,7 +56,9 @@ class CredentialsTest {
           .toURI();
 
       Credentials credentials = Credentials.fromJsonFile(Paths.get(uri).toString());
-      Assertions.assertEquals("simon.steinkellner", credentials.getUsername());
+      Assertions.assertNotNull(credentials);
+      Assertions.assertNotNull(credentials.getUsername());
+      Assertions.assertNotNull(credentials.getPassword());
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
