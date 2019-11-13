@@ -1,6 +1,6 @@
 package at.stnwtr.indy4j.route;
 
-import at.stnwtr.indy4j.request.IndyRequest;
+import at.stnwtr.indy4j.net.IndyRequest;
 import java.util.Objects;
 import net.dongliu.requests.Methods;
 

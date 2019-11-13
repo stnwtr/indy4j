@@ -1,4 +1,4 @@
-package at.stnwtr.indy4j.response;
+package at.stnwtr.indy4j.net;
 
 import java.util.Objects;
 import net.dongliu.requests.RawResponse;

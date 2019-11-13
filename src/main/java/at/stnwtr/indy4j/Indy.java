@@ -2,7 +2,10 @@ package at.stnwtr.indy4j;
 
 import at.stnwtr.indy4j.credentials.Credentials;
 import at.stnwtr.indy4j.event.Event;
-import at.stnwtr.indy4j.response.IndyResponse;
+import at.stnwtr.indy4j.event.EventContext;
+import at.stnwtr.indy4j.event.FutureEvent;
+import at.stnwtr.indy4j.event.PastEvent;
+import at.stnwtr.indy4j.net.IndyResponse;
 import at.stnwtr.indy4j.route.Routes;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -78,12 +81,12 @@ public class Indy {
    *
    * @return A set of all events.
    */
-  public Set<Event> getEvents() {
+  public Set<EventContext> getAllEventContexts() {
     JSONObject events = Routes.GET_EVENTS.newRequest().send(session).asJson();
     return events.keySet()
         .stream()
         .map(events::getJSONObject)
-        .map(Event::new)
+        .map(EventContext::new)
         .collect(Collectors.toSet());
   }
 
@@ -93,14 +96,48 @@ public class Indy {
    * @param limit The amount of events the stream should contain.
    * @return A set of n upcoming events.
    */
-  public Set<Event> getNextEvents(int limit) {
-    return getEvents()
+  public Set<EventContext> getNextEventContexts(int limit) {
+    return getAllEventContexts()
         .stream()
-        .filter(Event::isFuture)
+        .filter(EventContext::isFuture)
+        .sorted(Comparator.comparing(EventContext::getDate))
         .limit(limit)
-        .sorted(Comparator.comparing(Event::getDate))
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
+
+  /**
+   * Load more event details into an {@link Event} object.
+   *
+   * @param eventContext The {@link EventContext}.
+   * @return A new {@link Event}.
+   */
+  public Event eventFromContext(EventContext eventContext) {
+    JSONObject jsonObject = Routes.LOAD_ALL.newRequest()
+        .body(eventContext.getEventRequestParameter()).send(session).asJson();
+
+    if (eventContext.isFuture()) {
+      return new FutureEvent(jsonObject);
+    } else {
+      return new PastEvent(jsonObject);
+    }
+  }
+
+//  public void loadEventContext(EventContext event) {
+//    if (event.isHoliday())
+//      return;
+//
+//    // is upcoming or not // load past // load all // <-- difference
+//
+//    JSONObject data = new JSONObject()
+//        .put("day", event.getDay())
+//        .put("date", event.getDate())
+//        .put("totalHours", event.getCount())
+//        .put("specificHours", event.getHours());
+//
+//    JSONObject details = Routes.LOAD_ALL.newRequest().body(data).send(session).asJson();
+//
+//    System.out.println(details.toString(4));
+//  }
 
 //
 //  private Optional getFutureEventDetails(Event event) {

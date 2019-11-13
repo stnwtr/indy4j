@@ -1,6 +1,5 @@
-package at.stnwtr.indy4j.request;
+package at.stnwtr.indy4j.net;
 
-import at.stnwtr.indy4j.response.IndyResponse;
 import at.stnwtr.indy4j.route.Route;
 import java.util.HashMap;
 import net.dongliu.requests.RawResponse;
