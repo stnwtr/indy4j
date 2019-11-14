@@ -1,11 +1,13 @@
 package at.stnwtr.indy4j;
 
 import at.stnwtr.indy4j.credentials.Credentials;
+import at.stnwtr.indy4j.event.Event;
 import at.stnwtr.indy4j.net.IndyResponse;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,7 +71,9 @@ class RequestTest {
   void getEventsTest() {
     indy.login();
 
-    indy.getNextEventContexts(3)
+    indy.getNextEventContexts(1).stream()
+        .map(indy::eventFromContext)
+        .map(event -> event.getEntryCombinationForHour(5))
         .forEach(System.out::println);
 
     indy.logout();

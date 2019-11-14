@@ -1,6 +1,7 @@
 package at.stnwtr.indy4j.event;
 
 import java.util.Objects;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -114,10 +115,9 @@ public class EventContext {
         .put("day", day)
         .put("date", date)
         .put("totalHours", 2)
-        .put("specificHours", new JSONObject()
-            .put("0", 3)
-            .put("1", 4)
-        );
+        .put("specificHours", new JSONArray()
+            .put(3)
+            .put(4));
   }
 
   /**

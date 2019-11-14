@@ -4,6 +4,7 @@ import at.stnwtr.indy4j.credentials.Credentials;
 import at.stnwtr.indy4j.event.Event;
 import at.stnwtr.indy4j.event.EventContext;
 import at.stnwtr.indy4j.event.FutureEvent;
+import at.stnwtr.indy4j.event.HolidayEvent;
 import at.stnwtr.indy4j.event.PastEvent;
 import at.stnwtr.indy4j.net.IndyResponse;
 import at.stnwtr.indy4j.route.Routes;
@@ -85,7 +86,7 @@ public class Indy {
     JSONObject events = Routes.GET_EVENTS.newRequest().send(session).asJson();
     return events.keySet()
         .stream()
-        .map(events::getJSONObject)
+        .map(events::getJSONObject) // get this indy dependency into event context;
         .map(EventContext::new)
         .collect(Collectors.toSet());
   }
@@ -115,64 +116,14 @@ public class Indy {
     JSONObject jsonObject = Routes.LOAD_ALL.newRequest()
         .body(eventContext.getEventRequestParameter()).send(session).asJson();
 
-    if (eventContext.isFuture()) {
-      return new FutureEvent(jsonObject);
-    } else {
-      return new PastEvent(jsonObject);
-    }
-  }
+    return new Event(eventContext, jsonObject);
 
-//  public void loadEventContext(EventContext event) {
-//    if (event.isHoliday())
-//      return;
-//
-//    // is upcoming or not // load past // load all // <-- difference
-//
-//    JSONObject data = new JSONObject()
-//        .put("day", event.getDay())
-//        .put("date", event.getDate())
-//        .put("totalHours", event.getCount())
-//        .put("specificHours", event.getHours());
-//
-//    JSONObject details = Routes.LOAD_ALL.newRequest().body(data).send(session).asJson();
-//
-//    System.out.println(details.toString(4));
-//  }
-
-//
-//  private Optional getFutureEventDetails(Event event) {
-//    JSONArray specifiedHours = new JSONArray();
-//    for (int hour : event.getHours()) {
-//      specifiedHours.put(hour);
-//    }
-//    JSONObject data = new JSONObject()
-//        .put("day", event.getDay())
-//        .put("totalHours", event.getCount())
-//        .put("date", event.getDate())
-//        .put("specifiedHours", specifiedHours);
-//
-//    JSONObject details = Routes.LOAD_ALL.newRequest().body(data).send(session).asJson();
-//
-//    System.out.println(details);
-//
-//    return null;
-//  }
-//
-//  private Optional getPastEventDetails(Event event) {
-//    return null;
-//  }
-//
-//  public Optional getEventDetails(Event event) {
-////    JSONObject data = new JSONObject()
-////        .put("date", event.getDate());
-////
-////     JSONObject absence = Routes.CHECK_TEACHER_ABSENCE.newRequest().body(data).send(session)
-////        .asJson();
-//
-//    if (event.getEventType().isEditable()) {
-//      return getFutureEventDetails(event);
+//    if (eventContext.isHoliday()) {
+//      return new HolidayEvent(eventContext, jsonObject);
+//    } else if (eventContext.isFuture()) {
+//      return new FutureEvent(eventContext, jsonObject);
 //    } else {
-//      return getPastEventDetails(event);
+//      return new PastEvent(eventContext, jsonObject);
 //    }
-//  }
+  }
 }
