@@ -87,7 +87,7 @@ public class Indy {
     return events.keySet()
         .stream()
         .map(events::getJSONObject) // get this indy dependency into event context;
-        .map(EventContext::new)
+        .map(jsonObject -> new EventContext(this, jsonObject))
         .collect(Collectors.toSet());
   }
 
@@ -116,14 +116,12 @@ public class Indy {
     JSONObject jsonObject = Routes.LOAD_ALL.newRequest()
         .body(eventContext.getEventRequestParameter()).send(session).asJson();
 
-    return new Event(eventContext, jsonObject);
-
-//    if (eventContext.isHoliday()) {
-//      return new HolidayEvent(eventContext, jsonObject);
-//    } else if (eventContext.isFuture()) {
-//      return new FutureEvent(eventContext, jsonObject);
-//    } else {
-//      return new PastEvent(eventContext, jsonObject);
-//    }
+    if (eventContext.isHoliday()) {
+      return new HolidayEvent(this, eventContext, jsonObject);
+    } else if (eventContext.isFuture()) {
+      return new FutureEvent(this, eventContext, jsonObject);
+    } else {
+      return new PastEvent(this, eventContext, jsonObject);
+    }
   }
 }

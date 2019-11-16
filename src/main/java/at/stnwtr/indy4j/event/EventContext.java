@@ -1,7 +1,8 @@
 package at.stnwtr.indy4j.event;
 
+import at.stnwtr.indy4j.Indy;
+import java.util.Arrays;
 import java.util.Objects;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -11,6 +12,11 @@ import org.json.JSONObject;
  * @since 20.10.2019
  */
 public class EventContext {
+
+  /**
+   * The dependency to an {@link Indy} object.
+   */
+  private final Indy indy;
 
   /**
    * The raw json object.
@@ -38,17 +44,41 @@ public class EventContext {
   private final String day;
 
   /**
+   * The count of the indy hours.
+   */
+  private final int hourCount;
+
+  /**
+   * The indy hours.
+   */
+  private final int[] hours;
+
+  /**
    * Constructor which expects the raw json object only.
    *
    * @param jsonObject The json object to build the event from.
    */
-  public EventContext(JSONObject jsonObject) {
+  public EventContext(Indy indy, JSONObject jsonObject) {
+    this.indy = indy;
     this.jsonObject = jsonObject;
     this.classes = jsonObject.getString("class");
 
     this.future = jsonObject.optString("pastOrFuturePopUp", "past").equals("future");
-    this.date = jsonObject.optString("number", null);
-    this.day = jsonObject.optString("day", null);
+    this.date = jsonObject.optString("number", "");
+    this.day = jsonObject.optString("day", "");
+
+    this.hourCount = 2;
+    this.hours = new int[]{3, 4};
+
+    // TODO: 15.11.2019 check for past event and parse count & hours.
+    /*
+    this.hourCount = future ? jsonObject.optInt("count", 0) : 0;
+    hours = new int[hourCount];
+
+    for (int i = 0; i < hourCount; i++) {
+      hours[i] = jsonObject.getJSONArray("dayEvents").getJSONObject(i).getInt("title");
+    }
+     */
   }
 
   /**
@@ -106,6 +136,24 @@ public class EventContext {
   }
 
   /**
+   * Get the amount of indy lessons.
+   *
+   * @return The amount of indy lessons.
+   */
+  public int getHourCount() {
+    return hourCount;
+  }
+
+  /**
+   * Get an array of the hours which are indy lessons.
+   *
+   * @return The indy lessons.
+   */
+  public int[] getHours() {
+    return hours;
+  }
+
+  /**
    * Get the {@link JSONObject} which is used to get further event details.
    *
    * @return The {@link Event} request json object.
@@ -114,10 +162,17 @@ public class EventContext {
     return new JSONObject()
         .put("day", day)
         .put("date", date)
-        .put("totalHours", 2)
-        .put("specificHours", new JSONArray()
-            .put(3)
-            .put(4));
+        .put("totalHours", hourCount)
+        .put("specificHours", hours);
+  }
+
+  /**
+   * Load more event details.
+   *
+   * @return A new {@link Event} filled with details.
+   */
+  public Event loadEvent() {
+    return indy.eventFromContext(this);
   }
 
   /**
@@ -133,10 +188,13 @@ public class EventContext {
     }
     EventContext that = (EventContext) o;
     return future == that.future &&
+        hourCount == that.hourCount &&
+        Objects.equals(indy, that.indy) &&
         Objects.equals(jsonObject, that.jsonObject) &&
         Objects.equals(classes, that.classes) &&
         Objects.equals(date, that.date) &&
-        Objects.equals(day, that.day);
+        Objects.equals(day, that.day) &&
+        Arrays.equals(hours, that.hours);
   }
 
   /**
@@ -144,7 +202,9 @@ public class EventContext {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(jsonObject, classes, future, date, day);
+    int result = Objects.hash(indy, jsonObject, classes, future, date, day, hourCount);
+    result = 31 * result + Arrays.hashCode(hours);
+    return result;
   }
 
   /**
@@ -153,11 +213,14 @@ public class EventContext {
   @Override
   public String toString() {
     return "EventContext{" +
-        "jsonObject=" + jsonObject +
+        "indy=" + indy +
+        ", jsonObject=" + jsonObject +
         ", classes='" + classes + '\'' +
         ", future=" + future +
         ", date='" + date + '\'' +
         ", day='" + day + '\'' +
+        ", hourCount=" + hourCount +
+        ", hours=" + Arrays.toString(hours) +
         '}';
   }
 }

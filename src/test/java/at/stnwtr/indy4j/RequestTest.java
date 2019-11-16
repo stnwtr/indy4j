@@ -1,13 +1,15 @@
 package at.stnwtr.indy4j;
 
 import at.stnwtr.indy4j.credentials.Credentials;
-import at.stnwtr.indy4j.event.Event;
+import at.stnwtr.indy4j.teacher.Teacher;
+import at.stnwtr.indy4j.event.EventContext;
+import at.stnwtr.indy4j.event.FutureEvent;
 import at.stnwtr.indy4j.net.IndyResponse;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.Objects;
-import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,9 +74,14 @@ class RequestTest {
     indy.login();
 
     indy.getNextEventContexts(1).stream()
-        .map(indy::eventFromContext)
-        .map(event -> event.getEntryCombinationForHour(5))
-        .forEach(System.out::println);
+        .map(EventContext::loadEvent)
+        .filter(event -> event instanceof FutureEvent)
+        .map(event -> (FutureEvent) event)
+        .forEach(futureEvent -> {
+          futureEvent.getTeachers(3).stream()
+              .sorted(Comparator.comparing(Teacher::getId))
+              .forEach(System.out::println);
+        });
 
     indy.logout();
   }

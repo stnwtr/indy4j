@@ -1,8 +1,7 @@
-package at.stnwtr.indy4j.entry;
+package at.stnwtr.indy4j.teacher;
 
 import at.stnwtr.indy4j.util.Pair;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -87,6 +86,15 @@ public final class Teacher {
   }
 
   /**
+   * Get the set with all expert qualifications.
+   *
+   * @return A set with all expert qualifications.
+   */
+  public Set<Pair<String, String>> getExpertise() {
+    return expertise;
+  }
+
+  /**
    * {@inheritDoc}
    */
   @Override
@@ -100,7 +108,8 @@ public final class Teacher {
     Teacher teacher = (Teacher) o;
     return Objects.equals(id, teacher.id) &&
         Objects.equals(firstName, teacher.firstName) &&
-        Objects.equals(lastName, teacher.lastName);
+        Objects.equals(lastName, teacher.lastName) &&
+        Objects.equals(expertise, teacher.expertise);
   }
 
   /**
@@ -108,7 +117,7 @@ public final class Teacher {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(id, firstName, lastName);
+    return Objects.hash(id, firstName, lastName, expertise);
   }
 
   /**
@@ -120,6 +129,7 @@ public final class Teacher {
         "id='" + id + '\'' +
         ", firstName='" + firstName + '\'' +
         ", lastName='" + lastName + '\'' +
+        ", expertise=" + expertise +
         '}';
   }
 }
