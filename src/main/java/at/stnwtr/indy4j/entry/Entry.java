@@ -1,5 +1,6 @@
 package at.stnwtr.indy4j.entry;
 
+import java.util.Objects;
 import org.json.JSONObject;
 
 /**
@@ -74,6 +75,15 @@ public class Entry {
     this.floor = floor;
   }
 
+  /**
+   * Create a new entry for a normal school day.
+   *
+   * @param hour The indy hour.
+   * @param teacherId The teacher ID.
+   * @param subject The subject.
+   * @param activity The activity.
+   * @return A new entry for normal school days.
+   */
   public static Entry normalSchoolDay(int hour, String teacherId, String subject, String activity) {
     return new Entry(
         EntryType.NORMAL_SCHOOL_DAY,
@@ -87,6 +97,14 @@ public class Entry {
     );
   }
 
+  /**
+   * Create a new entry for school events.
+   *
+   * @param hour The indy hour.
+   * @param teacherId The teacher ID.
+   * @param event The event description.
+   * @return A new entry for school events.
+   */
   public static Entry schoolEvent(int hour, String teacherId, String event) {
     return new Entry(
         EntryType.SCHOOL_EVENT,
@@ -100,6 +118,12 @@ public class Entry {
     );
   }
 
+  /**
+   * Create a new entry for future school absence.
+   *
+   * @param hour The indy hour.
+   * @return A new entry for school absence.
+   */
   public static Entry schoolAbsence(int hour) {
     return new Entry(
         EntryType.SCHOOL_ABSENCE,
@@ -113,6 +137,16 @@ public class Entry {
     );
   }
 
+  /**
+   * Create a new entry for any free room.
+   *
+   * @param hour The indy hour.
+   * @param subject The subject.
+   * @param activity The activity.
+   * @param house The house.
+   * @param floor The floor.
+   * @return A new entry for free room.
+   */
   public static Entry freeRoom(int hour, String subject, String activity, House house,
       Floor floor) {
     return new Entry(
@@ -127,6 +161,12 @@ public class Entry {
     );
   }
 
+  /**
+   * Cancel an entry subscription.
+   *
+   * @param hour The indy hour.
+   * @return A new empty entry which overrides already existing entries.
+   */
   public static Entry cancel(int hour) {
     return new Entry(
         EntryType.NORMAL_SCHOOL_DAY,
@@ -140,6 +180,83 @@ public class Entry {
     );
   }
 
+  /**
+   * Get the entry type.
+   *
+   * @return The entry type.
+   */
+  public EntryType getEntryType() {
+    return entryType;
+  }
+
+  /**
+   * Get the indy hour.
+   *
+   * @return The indy hour.
+   */
+  public int getHour() {
+    return hour;
+  }
+
+  /**
+   * Get the teacher ID.
+   *
+   * @return The teacher ID.
+   */
+  public String getTeacherId() {
+    return teacherId;
+  }
+
+  /**
+   * Get the subject.
+   *
+   * @return The subject.
+   */
+  public String getSubject() {
+    return subject;
+  }
+
+  /**
+   * Get the activity.
+   *
+   * @return The activity.
+   */
+  public String getActivity() {
+    return activity;
+  }
+
+  /**
+   * Get the event description.
+   *
+   * @return The event description.
+   */
+  public String getEvent() {
+    return event;
+  }
+
+  /**
+   * Get the house if free room was chosen.
+   *
+   * @return The house.
+   */
+  public House getHouse() {
+    return house;
+  }
+
+  /**
+   * Get the floor if free room was chosen.
+   *
+   * @return The floor.
+   */
+  public Floor getFloor() {
+    return floor;
+  }
+
+  /**
+   * Summarizes the entry into a json object to send via http request.
+   *
+   * @return The json request object.
+   */
   public JSONObject asJsonRequest() {
     return new JSONObject()
         .put("hour", hour)
@@ -151,5 +268,52 @@ public class Entry {
         .put("event", event)
         .put("fid", floor.getTitle())
         .put("house", house.getTitle());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Entry entry = (Entry) o;
+    return hour == entry.hour &&
+        entryType == entry.entryType &&
+        Objects.equals(teacherId, entry.teacherId) &&
+        Objects.equals(subject, entry.subject) &&
+        Objects.equals(activity, entry.activity) &&
+        Objects.equals(event, entry.event) &&
+        house == entry.house &&
+        floor == entry.floor;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(entryType, hour, teacherId, subject, activity, event, house, floor);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "Entry{" +
+        "entryType=" + entryType +
+        ", hour=" + hour +
+        ", teacherId='" + teacherId + '\'' +
+        ", subject='" + subject + '\'' +
+        ", activity='" + activity + '\'' +
+        ", event='" + event + '\'' +
+        ", house=" + house +
+        ", floor=" + floor +
+        '}';
   }
 }

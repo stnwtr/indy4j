@@ -19,4 +19,21 @@ public class PastEvent extends Event {
 
     // TODO: 16.11.2019 load entries here
   }
+
+  /**
+   * Mark this indy hour as absent.
+   *
+   * @param hour The indy hour.
+   */
+  public void changeAbsent(int hour) {
+    indy.changeAbsent(this, hour);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "PastEvent{}";
+  }
 }

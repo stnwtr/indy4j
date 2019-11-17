@@ -26,7 +26,7 @@ class CredentialsTest {
    */
   @Test
   void staticFactoryTest() {
-    Credentials credentials = Credentials.of("pra14", "abc123");
+    Credentials credentials = Credentials.from("pra14", "abc123");
 
     Assertions.assertEquals("pra14", credentials.getUsername());
     Assertions.assertEquals("abc123", credentials.getPassword());

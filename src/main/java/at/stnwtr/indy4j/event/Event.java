@@ -5,6 +5,7 @@ import at.stnwtr.indy4j.entry.EntryCombination;
 import at.stnwtr.indy4j.teacher.InvalidTeacherException;
 import at.stnwtr.indy4j.teacher.Teacher;
 import at.stnwtr.indy4j.util.JsonUtility;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.json.JSONObject;
@@ -25,12 +26,12 @@ public abstract class Event {
   /**
    * The associated {@link EventContext}.
    */
-  protected final EventContext eventContext;
+  final EventContext eventContext;
 
   /**
    * The raw json object.
    */
-  protected final JSONObject jsonObject;
+  private final JSONObject jsonObject;
 
   /**
    * The constructor which only expects the raw json response. Parses the json object.
@@ -91,5 +92,42 @@ public abstract class Event {
    */
   public JSONObject getJsonObject() {
     return jsonObject;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Event event = (Event) o;
+    return Objects.equals(indy, event.indy) &&
+        Objects.equals(eventContext, event.eventContext) &&
+        Objects.equals(jsonObject, event.jsonObject);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(indy, eventContext, jsonObject);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "Event{" +
+        "indy=" + indy +
+        ", eventContext=" + eventContext +
+        ", jsonObject=" + jsonObject +
+        '}';
   }
 }

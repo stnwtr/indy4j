@@ -42,7 +42,7 @@ public class Credentials {
    * @param password The password.
    * @return A new credentials instance.
    */
-  public static Credentials of(String username, String password) {
+  public static Credentials from(String username, String password) {
     return new Credentials(username, password);
   }
 
@@ -75,9 +75,8 @@ public class Credentials {
       return fromJsonObject(jsonObject);
     } catch (IOException e) {
       e.printStackTrace();
+      throw new IllegalCredentialsException("Could not read json file!", e);
     }
-
-    return new Credentials("", "");
   }
 
   /**

@@ -3,11 +3,11 @@ package at.stnwtr.indy4j.event;
 import at.stnwtr.indy4j.Indy;
 import at.stnwtr.indy4j.entry.Entry;
 import at.stnwtr.indy4j.entry.EntryCombination;
-import at.stnwtr.indy4j.route.Routes;
 import at.stnwtr.indy4j.teacher.Teacher;
 import at.stnwtr.indy4j.util.JsonUtility;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.json.JSONObject;
@@ -39,11 +39,6 @@ public class FutureEvent extends Event {
    * A map which stores hour and a set of available entry combinations.
    */
   private final Map<Integer, Set<EntryCombination>> entryCombinations;
-
-  /**
-   * A map which stores hour and entry.
-   */
-  private final Map<Integer, Set<Entry>> entries = null;
 
   /**
    * {@inheritDoc}
@@ -176,5 +171,57 @@ public class FutureEvent extends Event {
    */
   public void enrol(Entry entry) {
     indy.enrol(this, entry);
+  }
+
+  /**
+   * Cancel an indy enrolment.
+   *
+   * @param hour The indy hour.
+   */
+  public void cancel(int hour) {
+    indy.enrol(this, Entry.cancel(hour));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+    FutureEvent that = (FutureEvent) o;
+    return freeRoomAllowed == that.freeRoomAllowed &&
+        Objects.equals(subjects, that.subjects) &&
+        Objects.equals(allTeachers, that.allTeachers) &&
+        Objects.equals(entryCombinations, that.entryCombinations);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode() {
+    return Objects
+        .hash(super.hashCode(), subjects, freeRoomAllowed, allTeachers, entryCombinations);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "FutureEvent{" +
+        "subjects=" + subjects +
+        ", freeRoomAllowed=" + freeRoomAllowed +
+        ", allTeachers=" + allTeachers +
+        ", entryCombinations=" + entryCombinations +
+        '}';
   }
 }

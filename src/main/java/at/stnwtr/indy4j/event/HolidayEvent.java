@@ -17,4 +17,12 @@ public class HolidayEvent extends Event {
   public HolidayEvent(Indy indy, EventContext eventContext, JSONObject jsonObject) {
     super(indy, eventContext, jsonObject);
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "HolidayEvent{}";
+  }
 }

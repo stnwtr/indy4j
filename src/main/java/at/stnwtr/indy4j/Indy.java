@@ -11,6 +11,7 @@ import at.stnwtr.indy4j.net.IndyResponse;
 import at.stnwtr.indy4j.route.Routes;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.dongliu.requests.Requests;
@@ -47,16 +48,14 @@ public class Indy {
 
   /**
    * Log in into the indy http session.
-   *
-   * @return A new {@link IndyResponse}.
    */
-  public IndyResponse login() {
+  public void login() {
     JSONObject data = new JSONObject()
         .put("LoginName", credentials.getUsername())
         .put("LoginPassword", credentials.getPassword())
         .put("camefrom", "index");
 
-    return Routes.LOGIN.newRequest().body(data).send(session);
+    Routes.LOGIN.newRequest().body(data).send(session);
   }
 
   /**
@@ -71,11 +70,9 @@ public class Indy {
 
   /**
    * Log out of the indy http session.
-   *
-   * @return A new {@link IndyResponse}.
    */
-  public IndyResponse logout() {
-    return Routes.LOGOUT.newRequest().send(session);
+  public void logout() {
+    Routes.LOGOUT.newRequest().send(session);
   }
 
   /**
@@ -126,9 +123,65 @@ public class Indy {
     }
   }
 
+  /**
+   * Save an entry for an {@link FutureEvent}.
+   *
+   * @param event The event.
+   * @param entry The entry.
+   */
   public void enrol(FutureEvent event, Entry entry) {
     JSONObject data = event.enrolmentJsonRequest(entry);
 
     Routes.SAVE_ENTRY.newRequest().body(data).send(session);
+  }
+
+  /**
+   * Change a past event entry to absent.
+   *
+   * @param event The {@link PastEvent}.
+   * @param hour The indy hour.
+   */
+  public void changeAbsent(PastEvent event, int hour) {
+    JSONObject data = new JSONObject()
+        .put("date", event.getEventContext().getDate())
+        .put("hour", hour)
+        .put("entry", "S");
+
+    Routes.CHANGE_ABSENT.newRequest().body(data).send(session);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Indy indy = (Indy) o;
+    return Objects.equals(credentials, indy.credentials) &&
+        Objects.equals(session, indy.session);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(credentials, session);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "Indy{" +
+        "credentials=" + credentials +
+        ", session=" + session +
+        '}';
   }
 }

@@ -58,4 +58,9 @@ public class Routes {
    * This route saves an entry.
    */
   public static final Route SAVE_ENTRY = Route.post("php/queries/set/saveEntry.php");
+
+  /**
+   * Change a past event entry to absent state.
+   */
+  public static final Route CHANGE_ABSENT = Route.post("php/queries/set/saveAbsenceChange.php");
 }
