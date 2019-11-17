@@ -31,7 +31,12 @@ public enum Floor {
   /**
    * The third floor.
    */
-  THIRD_FLOOR("3. Stock");
+  THIRD_FLOOR("3. Stock"),
+
+  /**
+   * Defines an empty floor.
+   */
+  EMPTY("");
 
   /**
    * The indy intern used title for the floor.
@@ -61,5 +66,24 @@ public enum Floor {
     }
 
     return null;
+  }
+
+  /**
+   * Get the indy intern used floor title.
+   *
+   * @return The floor title for the request.
+   */
+  public String getTitle() {
+    return title;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "Floor{" +
+        "title='" + title + '\'' +
+        '}';
   }
 }

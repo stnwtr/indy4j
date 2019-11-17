@@ -54,4 +54,8 @@ public class Routes {
    */
   public static final Route CALENDAR = Route.get("pages/calendarStudent/calendar.php");
 
+  /**
+   * This route saves an entry.
+   */
+  public static final Route SAVE_ENTRY = Route.post("php/queries/set/saveEntry.php");
 }

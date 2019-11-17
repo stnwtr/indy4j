@@ -16,7 +16,12 @@ public enum House {
   /**
    * The HTL building.
    */
-  HTL("HTL");
+  HTL("HTL"),
+
+  /**
+   * Defines an empty house.
+   */
+  EMPTY("");
 
   /**
    * The indy intern used title for the house.
@@ -46,5 +51,24 @@ public enum House {
     }
 
     return null;
+  }
+
+  /**
+   * Get the indy intern used house title.
+   *
+   * @return The title used for the request.
+   */
+  public String getTitle() {
+    return title;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "House{" +
+        "title='" + title + '\'' +
+        '}';
   }
 }

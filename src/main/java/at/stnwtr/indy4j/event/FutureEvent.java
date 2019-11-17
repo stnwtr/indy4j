@@ -3,6 +3,7 @@ package at.stnwtr.indy4j.event;
 import at.stnwtr.indy4j.Indy;
 import at.stnwtr.indy4j.entry.Entry;
 import at.stnwtr.indy4j.entry.EntryCombination;
+import at.stnwtr.indy4j.route.Routes;
 import at.stnwtr.indy4j.teacher.Teacher;
 import at.stnwtr.indy4j.util.JsonUtility;
 import java.util.HashMap;
@@ -154,5 +155,26 @@ public class FutureEvent extends Event {
     return getEntryCombinationForHour(hour).stream()
         .map(EntryCombination::getTeacher)
         .collect(Collectors.toSet());
+  }
+
+  /**
+   * Get the json object needed to save an entry.
+   *
+   * @param entry The entry to save.
+   * @return The newly built {@link JSONObject}.
+   */
+  public JSONObject enrolmentJsonRequest(Entry entry) {
+    return entry.asJsonRequest()
+        .put("day", eventContext.getDay())
+        .put("date", eventContext.getDate());
+  }
+
+  /**
+   * Enrol in the indy service.
+   *
+   * @param entry The entry to save.
+   */
+  public void enrol(Entry entry) {
+    indy.enrol(this, entry);
   }
 }

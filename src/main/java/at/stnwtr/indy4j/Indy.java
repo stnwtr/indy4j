@@ -1,6 +1,7 @@
 package at.stnwtr.indy4j;
 
 import at.stnwtr.indy4j.credentials.Credentials;
+import at.stnwtr.indy4j.entry.Entry;
 import at.stnwtr.indy4j.event.Event;
 import at.stnwtr.indy4j.event.EventContext;
 import at.stnwtr.indy4j.event.FutureEvent;
@@ -123,5 +124,11 @@ public class Indy {
     } else {
       return new PastEvent(this, eventContext, jsonObject);
     }
+  }
+
+  public void enrol(FutureEvent event, Entry entry) {
+    JSONObject data = event.enrolmentJsonRequest(entry);
+
+    Routes.SAVE_ENTRY.newRequest().body(data).send(session);
   }
 }

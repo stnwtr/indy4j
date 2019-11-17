@@ -1,14 +1,15 @@
 package at.stnwtr.indy4j;
 
 import at.stnwtr.indy4j.credentials.Credentials;
-import at.stnwtr.indy4j.teacher.Teacher;
+import at.stnwtr.indy4j.entry.Entry;
+import at.stnwtr.indy4j.entry.Floor;
+import at.stnwtr.indy4j.entry.House;
 import at.stnwtr.indy4j.event.EventContext;
 import at.stnwtr.indy4j.event.FutureEvent;
 import at.stnwtr.indy4j.net.IndyResponse;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.util.Comparator;
 import java.util.Objects;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,14 +74,18 @@ class RequestTest {
   void getEventsTest() {
     indy.login();
 
-    indy.getNextEventContexts(1).stream()
+    indy.getNextEventContexts(10).stream()
         .map(EventContext::loadEvent)
         .filter(event -> event instanceof FutureEvent)
         .map(event -> (FutureEvent) event)
         .forEach(futureEvent -> {
-          futureEvent.getTeachers(3).stream()
-              .sorted(Comparator.comparing(Teacher::getId))
-              .forEach(System.out::println);
+          for (int i = 0; i < futureEvent.getEventContext().getHours().length; i++) {
+            int hour = futureEvent.getEventContext().getHours()[i];
+
+            Entry entry = Entry.cancel(hour);
+
+            futureEvent.enrol(entry);
+          }
         });
 
     indy.logout();
