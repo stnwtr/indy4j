@@ -48,7 +48,7 @@ dependencies {
 
 ## Examples
 
-### Automatically enrol for random subject and teacher
+### Automatically enrol for first (alphabet ascending) subject and teacher
 ```java
 Indy indy = new Indy(Credentials.from("username", "password"));
 indy.login();
