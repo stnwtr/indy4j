@@ -1,7 +1,7 @@
 package at.stnwtr.indy4j;
 
 import at.stnwtr.indy4j.credentials.Credentials;
-import at.stnwtr.indy4j.entry.Entry;
+import at.stnwtr.indy4j.entry.RequestEntry;
 import at.stnwtr.indy4j.event.Event;
 import at.stnwtr.indy4j.event.EventContext;
 import at.stnwtr.indy4j.event.FutureEvent;
@@ -52,7 +52,7 @@ public class Indy {
   public void login() {
     JSONObject data = new JSONObject()
         .put("LoginName", credentials.getUsername())
-        .put("LoginPassword", credentials.getPassword())
+        .put("LoginPassword", String.valueOf(credentials.getPassword()))
         .put("camefrom", "index");
 
     Routes.LOGIN.newRequest().body(data).send(session);
@@ -112,7 +112,7 @@ public class Indy {
    */
   public Event eventFromContext(EventContext eventContext) {
     JSONObject jsonObject = Routes.LOAD_ALL.newRequest()
-        .body(eventContext.getEventRequestParameter()).send(session).asJson();
+        .body(eventContext.getEventRequestData()).sendLoadAllRequest(session).asJson();
 
     if (eventContext.isHoliday()) {
       return new HolidayEvent(this, eventContext, jsonObject);
@@ -127,10 +127,10 @@ public class Indy {
    * Save an entry for an {@link FutureEvent}.
    *
    * @param event The event.
-   * @param entry The entry.
+   * @param requestEntry The entry.
    */
-  public void enrol(FutureEvent event, Entry entry) {
-    JSONObject data = event.enrolmentJsonRequest(entry);
+  public void enrol(FutureEvent event, RequestEntry requestEntry) {
+    JSONObject data = event.enrolmentJsonRequest(requestEntry);
 
     Routes.SAVE_ENTRY.newRequest().body(data).send(session);
   }

@@ -1,13 +1,16 @@
 package at.stnwtr.indy4j.event;
 
 import at.stnwtr.indy4j.Indy;
-import at.stnwtr.indy4j.entry.Entry;
 import at.stnwtr.indy4j.entry.EntryCombination;
+import at.stnwtr.indy4j.entry.RequestEntry;
+import at.stnwtr.indy4j.entry.ResponseEntry;
+import at.stnwtr.indy4j.teacher.InvalidTeacherException;
 import at.stnwtr.indy4j.teacher.Teacher;
 import at.stnwtr.indy4j.util.JsonUtility;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.json.JSONObject;
@@ -39,6 +42,11 @@ public class FutureEvent extends Event {
    * A map which stores hour and a set of available entry combinations.
    */
   private final Map<Integer, Set<EntryCombination>> entryCombinations;
+
+  /**
+   * A map which stores the hour and the associated entry.
+   */
+  private final Map<Integer, Optional<ResponseEntry>> entries;
 
   /**
    * {@inheritDoc}
@@ -73,13 +81,45 @@ public class FutureEvent extends Event {
         .collect(Collectors.toSet());
 
     entryCombinations = new HashMap<>();
-    for (int i = 0; i < eventContext.getHours().length; i++) {
-      entryCombinations
-          .put(eventContext.getHours()[i],
-              getCombinationForHour(eventContext.getHours()[i], allTeachers));
+    for (int hour : eventContext.getHours()) {
+      entryCombinations.put(hour, getCombinationForHour(hour));
     }
 
-    // TODO: 15.11.2019 load entries here
+    entries = new HashMap<>();
+    for (int hour : eventContext.getHours()) {
+      entries.put(hour, getEntryForHour(hour));
+    }
+  }
+
+  /**
+   * Parses the json object and builds all available {@link EntryCombination} objects.
+   *
+   * @param hour The hour to build this {@link Set} from;
+   * @return A new {@link Set} which consists of all possible {@link EntryCombination} objects.
+   */
+  private Set<EntryCombination> getCombinationForHour(int hour) {
+    return JsonUtility.jsonArrayToJsonObjectSet(
+        jsonObject.getJSONObject("teachers").getJSONObject(eventContext.getDay())
+            .getJSONArray(String.valueOf(hour))).stream()
+        .filter(combination -> !combination.getString("tid").equals(Teacher.INVALID.getId()))
+        .map(combination -> {
+          String teacherId = combination.getString("tid");
+          Teacher teacher = allTeachers.stream()
+              .filter(t -> t.getId().equals(teacherId))
+              .findFirst()
+              .orElseThrow(() -> new InvalidTeacherException("Teacher for combination not found!"));
+
+          return new EntryCombination(
+              teacher,
+              combination.getString("room"),
+              combination.optBoolean("consultation", false),
+              combination.optBoolean("absence", false),
+              combination.getInt("studentAmount"),
+              combination.getInt("limit"),
+              hour
+          );
+        })
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -155,22 +195,31 @@ public class FutureEvent extends Event {
   /**
    * Get the json object needed to save an entry.
    *
-   * @param entry The entry to save.
+   * @param requestEntry The entry to save.
    * @return The newly built {@link JSONObject}.
    */
-  public JSONObject enrolmentJsonRequest(Entry entry) {
-    return entry.asJsonRequest()
+  public JSONObject enrolmentJsonRequest(RequestEntry requestEntry) {
+    return requestEntry.asJsonRequest()
         .put("day", eventContext.getDay())
         .put("date", eventContext.getDate());
   }
 
   /**
+   * Get all entries.
+   *
+   * @return All entries.
+   */
+  public Map<Integer, Optional<ResponseEntry>> getEntries() {
+    return entries;
+  }
+
+  /**
    * Enrol in the indy service.
    *
-   * @param entry The entry to save.
+   * @param requestEntry The entry to save.
    */
-  public void enrol(Entry entry) {
-    indy.enrol(this, entry);
+  public void enrol(RequestEntry requestEntry) {
+    indy.enrol(this, requestEntry);
   }
 
   /**
@@ -179,7 +228,7 @@ public class FutureEvent extends Event {
    * @param hour The indy hour.
    */
   public void cancel(int hour) {
-    indy.enrol(this, Entry.cancel(hour));
+    indy.enrol(this, RequestEntry.cancel(hour));
   }
 
   /**

@@ -3,6 +3,7 @@ package at.stnwtr.indy4j.credentials;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Objects;
 import org.json.JSONObject;
 
@@ -22,7 +23,7 @@ public class Credentials {
   /**
    * The password.
    */
-  private final String password;
+  private final char[] password;
 
   /**
    * Constructor which takes both attributes.
@@ -30,7 +31,7 @@ public class Credentials {
    * @param username The username.
    * @param password The password.
    */
-  private Credentials(String username, String password) {
+  private Credentials(String username, char[] password) {
     this.username = username;
     this.password = password;
   }
@@ -43,7 +44,7 @@ public class Credentials {
    * @return A new credentials instance.
    */
   public static Credentials from(String username, String password) {
-    return new Credentials(username, password);
+    return new Credentials(username, password.toCharArray());
   }
 
   /**
@@ -57,7 +58,8 @@ public class Credentials {
       throw new IllegalCredentialsException("JSONObject must contain username and password!");
     }
 
-    return new Credentials(jsonObject.getString("username"), jsonObject.getString("password"));
+    return new Credentials(jsonObject.getString("username"),
+        jsonObject.getString("password").toCharArray());
   }
 
   /**
@@ -101,7 +103,7 @@ public class Credentials {
       throw new IllegalCredentialsException("Wrong number of \":\" in string.");
     }
 
-    return new Credentials(parts[0], parts[1]);
+    return new Credentials(parts[0], parts[1].toCharArray());
   }
 
   /**
@@ -118,7 +120,7 @@ public class Credentials {
    *
    * @return The password.
    */
-  public String getPassword() {
+  public char[] getPassword() {
     return password;
   }
 
@@ -135,7 +137,7 @@ public class Credentials {
     }
     Credentials that = (Credentials) o;
     return Objects.equals(username, that.username) &&
-        Objects.equals(password, that.password);
+        Arrays.equals(password, that.password);
   }
 
   /**
@@ -143,7 +145,9 @@ public class Credentials {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(username, password);
+    int result = Objects.hash(username);
+    result = 31 * result + Arrays.hashCode(password);
+    return result;
   }
 
   /**
@@ -153,7 +157,7 @@ public class Credentials {
   public String toString() {
     return "Credentials{" +
         "username='" + username + '\'' +
-        ", password='" + password + '\'' +
+        ", password='" + "********" + '\'' +
         '}';
   }
 }

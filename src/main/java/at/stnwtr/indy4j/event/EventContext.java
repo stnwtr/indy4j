@@ -1,7 +1,11 @@
 package at.stnwtr.indy4j.event;
 
 import at.stnwtr.indy4j.Indy;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.json.JSONObject;
 
@@ -156,14 +160,18 @@ public class EventContext {
   /**
    * Get the {@link JSONObject} which is used to get further event details.
    *
-   * @return The {@link Event} request json object.
+   * @return The {@link Event} request data.
    */
-  public JSONObject getEventRequestParameter() {
-    return new JSONObject()
-        .put("day", day)
-        .put("date", date)
-        .put("totalHours", hourCount)
-        .put("specificHours", hours);
+  public List<? extends Map.Entry<String, ?>> getEventRequestData() {
+    List<SimpleEntry<String, ?>> entries = new ArrayList<>();
+    entries.add(new SimpleEntry<>("day", day));
+    entries.add(new SimpleEntry<>("date", date));
+    entries.add(new SimpleEntry<>("totalHours", hourCount));
+    for (int hour : hours) {
+      entries.add(new SimpleEntry<>("specificHours[]", hour));
+    }
+
+    return entries;
   }
 
   /**

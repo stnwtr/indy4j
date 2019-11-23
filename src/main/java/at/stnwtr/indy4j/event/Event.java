@@ -1,13 +1,9 @@
 package at.stnwtr.indy4j.event;
 
 import at.stnwtr.indy4j.Indy;
-import at.stnwtr.indy4j.entry.EntryCombination;
-import at.stnwtr.indy4j.teacher.InvalidTeacherException;
-import at.stnwtr.indy4j.teacher.Teacher;
-import at.stnwtr.indy4j.util.JsonUtility;
+import at.stnwtr.indy4j.entry.ResponseEntry;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Optional;
 import org.json.JSONObject;
 
 /**
@@ -21,7 +17,7 @@ public abstract class Event {
   /**
    * The dependency to an {@link Indy} object.
    */
-  protected final Indy indy;
+  final Indy indy;
 
   /**
    * The associated {@link EventContext}.
@@ -31,7 +27,7 @@ public abstract class Event {
   /**
    * The raw json object.
    */
-  private final JSONObject jsonObject;
+  final JSONObject jsonObject;
 
   /**
    * The constructor which only expects the raw json response. Parses the json object.
@@ -45,35 +41,16 @@ public abstract class Event {
   }
 
   /**
-   * Parses the json object and builds all available {@link EntryCombination} objects.
+   * Get the entry for a specific hour.
    *
-   * @param hour The hour to build this {@link Set} from;
-   * @param allTeachers A {@link Set} with all available teachers.
-   * @return A new {@link Set} which consists of all possible {@link EntryCombination} objects.
+   * @param hour The hour to get the entry for.
+   * @return The {@link ResponseEntry} wrapped in an optional instance.
    */
-  Set<EntryCombination> getCombinationForHour(int hour, Set<Teacher> allTeachers) {
-    return JsonUtility.jsonArrayToJsonObjectSet(
-        jsonObject.getJSONObject("teachers").getJSONObject(eventContext.getDay())
-            .getJSONArray(String.valueOf(hour))).stream()
-        .filter(combination -> !combination.getString("tid").equals("-"))
-        .map(combination -> {
-          String teacherId = combination.getString("tid");
-          Teacher teacher = allTeachers.stream()
-              .filter(t -> t.getId().equals(teacherId))
-              .findFirst()
-              .orElseThrow(() -> new InvalidTeacherException("Teacher for combination not found!"));
-
-          return new EntryCombination(
-              teacher,
-              combination.getString("room"),
-              combination.optBoolean("consultation", false),
-              combination.optBoolean("absence", false),
-              combination.getInt("studentAmount"),
-              combination.getInt("limit"),
-              hour
-          );
-        })
-        .collect(Collectors.toSet());
+  Optional<ResponseEntry> getEntryForHour(int hour) {
+    return Optional.ofNullable(jsonObject)
+        .map(jo -> jo.optJSONObject("entries"))
+        .map(jo -> jo.optJSONObject(String.valueOf(hour)))
+        .map(ResponseEntry::new);
   }
 
   /**

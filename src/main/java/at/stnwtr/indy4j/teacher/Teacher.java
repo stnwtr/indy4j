@@ -14,6 +14,11 @@ import java.util.Set;
 public final class Teacher {
 
   /**
+   * Invalid teacher, used if no teacher exists.
+   */
+  public static final Teacher INVALID = new Teacher("-", "-", "-");
+
+  /**
    * The unique teacher id.
    */
   private final String id;

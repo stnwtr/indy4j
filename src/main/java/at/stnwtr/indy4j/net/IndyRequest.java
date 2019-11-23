@@ -1,7 +1,10 @@
 package at.stnwtr.indy4j.net;
 
 import at.stnwtr.indy4j.route.Route;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import net.dongliu.requests.RawResponse;
 import net.dongliu.requests.Session;
 import org.json.JSONObject;
@@ -22,7 +25,12 @@ public class IndyRequest {
   /**
    * The indy http request json body.
    */
-  private JSONObject body;
+  private JSONObject jsonBody;
+
+  /**
+   * The indy http request map entry body.
+   */
+  private List<? extends Map.Entry<String, ?>> mapEntryBody;
 
   /**
    * Constructor which takes only the {@link Route}.
@@ -31,7 +39,8 @@ public class IndyRequest {
    */
   public IndyRequest(Route route) {
     this.route = route;
-    this.body = new JSONObject();
+    this.jsonBody = new JSONObject();
+    mapEntryBody = new ArrayList<>();
   }
 
   /**
@@ -41,7 +50,18 @@ public class IndyRequest {
    * @return Itself, for builder pattern purposes.
    */
   public IndyRequest body(JSONObject jsonObject) {
-    this.body = jsonObject;
+    this.jsonBody = jsonObject;
+    return this;
+  }
+
+  /**
+   * Set the request body.
+   *
+   * @param mapEntries An array of {@link Map.Entry} objects.
+   * @return Itself, for builder pattern purposes.
+   */
+  public IndyRequest body(List<? extends Map.Entry<String, ?>> mapEntries) {
+    this.mapEntryBody = mapEntries;
     return this;
   }
 
@@ -53,7 +73,15 @@ public class IndyRequest {
    */
   public IndyResponse send(Session session) {
     RawResponse response = session.newRequest(route.getMethod(), route.getUrl())
-        .body(body.toMap() == null ? new HashMap<>() : body.toMap())
+        .body(jsonBody.toMap() == null ? new HashMap<>() : jsonBody.toMap())
+        .send();
+
+    return new IndyResponse(response);
+  }
+
+  public IndyResponse sendLoadAllRequest(Session session) {
+    RawResponse response = session.newRequest(route.getMethod(), route.getUrl())
+        .body(mapEntryBody)
         .send();
 
     return new IndyResponse(response);

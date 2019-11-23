@@ -9,7 +9,7 @@ import org.json.JSONObject;
  * @author stnwtr
  * @since 16.11.2019
  */
-public class Entry {
+public class RequestEntry {
 
   /**
    * The {@link EntryType}.
@@ -63,7 +63,7 @@ public class Entry {
    * @param house The house.
    * @param floor The floor.
    */
-  private Entry(EntryType entryType, int hour, String teacherId, String subject,
+  private RequestEntry(EntryType entryType, int hour, String teacherId, String subject,
       String activity, String event, House house, Floor floor) {
     this.entryType = entryType;
     this.hour = hour;
@@ -84,8 +84,9 @@ public class Entry {
    * @param activity The activity.
    * @return A new entry for normal school days.
    */
-  public static Entry normalSchoolDay(int hour, String teacherId, String subject, String activity) {
-    return new Entry(
+  public static RequestEntry normalSchoolDay(int hour, String teacherId, String subject,
+      String activity) {
+    return new RequestEntry(
         EntryType.NORMAL_SCHOOL_DAY,
         hour,
         teacherId,
@@ -105,8 +106,8 @@ public class Entry {
    * @param event The event description.
    * @return A new entry for school events.
    */
-  public static Entry schoolEvent(int hour, String teacherId, String event) {
-    return new Entry(
+  public static RequestEntry schoolEvent(int hour, String teacherId, String event) {
+    return new RequestEntry(
         EntryType.SCHOOL_EVENT,
         hour,
         teacherId,
@@ -124,8 +125,8 @@ public class Entry {
    * @param hour The indy hour.
    * @return A new entry for school absence.
    */
-  public static Entry schoolAbsence(int hour) {
-    return new Entry(
+  public static RequestEntry schoolAbsence(int hour) {
+    return new RequestEntry(
         EntryType.SCHOOL_ABSENCE,
         hour,
         "undefined",
@@ -147,9 +148,9 @@ public class Entry {
    * @param floor The floor.
    * @return A new entry for free room.
    */
-  public static Entry freeRoom(int hour, String subject, String activity, House house,
+  public static RequestEntry freeRoom(int hour, String subject, String activity, House house,
       Floor floor) {
-    return new Entry(
+    return new RequestEntry(
         EntryType.FREE_ROOM,
         hour,
         "",
@@ -167,8 +168,8 @@ public class Entry {
    * @param hour The indy hour.
    * @return A new empty entry which overrides already existing entries.
    */
-  public static Entry cancel(int hour) {
-    return new Entry(
+  public static RequestEntry cancel(int hour) {
+    return new RequestEntry(
         EntryType.NORMAL_SCHOOL_DAY,
         hour,
         "",
@@ -281,15 +282,15 @@ public class Entry {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Entry entry = (Entry) o;
-    return hour == entry.hour &&
-        entryType == entry.entryType &&
-        Objects.equals(teacherId, entry.teacherId) &&
-        Objects.equals(subject, entry.subject) &&
-        Objects.equals(activity, entry.activity) &&
-        Objects.equals(event, entry.event) &&
-        house == entry.house &&
-        floor == entry.floor;
+    RequestEntry requestEntry = (RequestEntry) o;
+    return hour == requestEntry.hour &&
+        entryType == requestEntry.entryType &&
+        Objects.equals(teacherId, requestEntry.teacherId) &&
+        Objects.equals(subject, requestEntry.subject) &&
+        Objects.equals(activity, requestEntry.activity) &&
+        Objects.equals(event, requestEntry.event) &&
+        house == requestEntry.house &&
+        floor == requestEntry.floor;
   }
 
   /**

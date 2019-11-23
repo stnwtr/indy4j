@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'application'
 }
 
 group 'at.stnwtr'
@@ -31,9 +30,4 @@ test {
         showStandardStreams = true
         events = ['passed', 'failed', 'skipped']
     }
-}
-
-application {
-    mainClassName = 'at.stnwtr.indy4j.Indy'
-    applicationDefaultJvmArgs = []
 }

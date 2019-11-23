@@ -29,7 +29,7 @@ class CredentialsTest {
     Credentials credentials = Credentials.from("pra14", "abc123");
 
     Assertions.assertEquals("pra14", credentials.getUsername());
-    Assertions.assertEquals("abc123", credentials.getPassword());
+    Assertions.assertArrayEquals("abc123".toCharArray(), credentials.getPassword());
   }
 
   /**
@@ -42,7 +42,7 @@ class CredentialsTest {
     );
 
     Assertions.assertEquals("pra14", credentials.getUsername());
-    Assertions.assertEquals("abc123", credentials.getPassword());
+    Assertions.assertArrayEquals("abc123".toCharArray(), credentials.getPassword());
   }
 
   /**
@@ -73,7 +73,7 @@ class CredentialsTest {
     Credentials credentials = Credentials.fromJsonString(jsonString);
 
     Assertions.assertEquals("pra14", credentials.getUsername());
-    Assertions.assertEquals("abc123", credentials.getPassword());
+    Assertions.assertArrayEquals("abc123".toCharArray(), credentials.getPassword());
   }
 
   /**
@@ -85,7 +85,7 @@ class CredentialsTest {
     Credentials credentials = Credentials.fromDottedString(dottedString);
 
     Assertions.assertEquals("pra14", credentials.getUsername());
-    Assertions.assertEquals("abc123", credentials.getPassword());
+    Assertions.assertArrayEquals("abc123".toCharArray(), credentials.getPassword());
   }
 
   /**
@@ -94,8 +94,7 @@ class CredentialsTest {
   @Test
   void illegalJsonObjectTest() {
     Assertions.assertThrows(IllegalCredentialsException.class,
-        () -> Credentials.fromJsonObject(new JSONObject().put("username", "pra14")
-    ));
+        () -> Credentials.fromJsonObject(new JSONObject().put("username", "pra14")));
   }
 
   /**
