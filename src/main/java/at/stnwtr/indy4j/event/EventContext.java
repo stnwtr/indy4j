@@ -60,6 +60,7 @@ public class EventContext {
   /**
    * Constructor which expects the raw json object only.
    *
+   * @param indy The {@link Indy} dependency.
    * @param jsonObject The json object to build the event from.
    */
   public EventContext(Indy indy, JSONObject jsonObject) {

@@ -87,7 +87,7 @@ public class FutureEvent extends Event {
 
     entries = new HashMap<>();
     for (int hour : eventContext.getHours()) {
-      entries.put(hour, getEntryForHour(hour));
+      entries.put(hour, super.getEntryForHour(hour));
     }
   }
 
@@ -211,6 +211,14 @@ public class FutureEvent extends Event {
    */
   public Map<Integer, Optional<ResponseEntry>> getEntries() {
     return entries;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  Optional<ResponseEntry> getEntryForHour(int hour) {
+    return entries.get(hour);
   }
 
   /**

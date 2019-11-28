@@ -1,8 +1,8 @@
 - [X] get this working
 ---
-- [ ] special indy integration
+- [X] special indy integration
 - [ ] my statistics integration
-- [ ] update and build documentation
+- [X] update and build documentation
 - [ ] release notes
 - [ ] get current entries
 - [ ] parse past events (hour count & hours)

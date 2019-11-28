@@ -92,7 +92,7 @@ public class Credentials {
   }
 
   /**
-   * Get credential instance from a <quote>username:password</quote> string.
+   * Get credential instance from a <q>username:password</q> string.
    *
    * @param dottedString The dotted string.
    * @return The new credentials instance.
