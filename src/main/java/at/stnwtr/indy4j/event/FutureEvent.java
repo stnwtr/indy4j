@@ -64,8 +64,8 @@ public class FutureEvent extends Event {
     allTeachers = jsonObject.getJSONObject("allTeachers").keySet().stream()
         .map(id -> {
           Teacher teacher = new Teacher(id,
-              jsonObject.getJSONObject("allTeachers").getJSONObject(id).getString("lastname"),
-              jsonObject.getJSONObject("allTeachers").getJSONObject(id).getString("firstname"));
+              jsonObject.getJSONObject("allTeachers").getJSONObject(id).getString("firstname"),
+              jsonObject.getJSONObject("allTeachers").getJSONObject(id).getString("lastname"));
 
           if (jsonObject.getJSONObject("expertise").has(id)) {
             JsonUtility
